@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kompassjakt">
+<title>Kompassjakt</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0f1e;--bg2:#111827;--bg3:#1a2235;
+  --accent:#00e5b4;--accent2:#0077ff;
+  --danger:#ff4d6d;--warn:#ffbe0b;
+  --text:#e8edf5;--muted:#6b7a99;
+  --border:rgba(255,255,255,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif}
+body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;padding:env(safe-area-inset-top,12px) 0 env(safe-area-inset-bottom,20px)}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1px 1px at 20% 15%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 75% 8%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 45% 30%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 90% 40%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 10% 60%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 60% 75%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 30% 88%,rgba(255,255,255,.3) 0%,transparent 100%)}
+.app{position:relative;z-index:1;width:100%;max-width:440px;padding:1.25rem 1.25rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.9rem}
+.header{width:100%;display:flex;justify-content:space-between;align-items:center;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.logo{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;cursor:default;user-select:none}
+.logo span{color:var(--muted)}
+.header-sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)}
+.stats{width:100%;display:flex;gap:8px}
+.stat{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.6rem .5rem;text-align:center}
+.stat-num{font-family:'Space Mono',monospace;font-size:18px;color:var(--text)}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+/* idle */
+.idle-screen{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;padding:2rem 0}
+.idle-icon{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,180,.15),transparent 70%);border:1px solid rgba(0,229,180,.3);display:flex;align-items:center;justify-content:center;font-size:40px}
+.idle-title{font-size:26px;font-weight:800}
+.idle-desc{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px}
+/* capital card */
+.capital-card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.25rem;text-align:center;position:relative;overflow:hidden}
+.capital-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.phase-pill{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:.6rem;background:rgba(0,229,180,.12);color:var(--accent);border:1px solid rgba(0,229,180,.25)}
+.phase-pill.result{background:rgba(0,119,255,.12);color:#60a5fa;border-color:rgba(0,119,255,.25)}
+.capital-name{font-size:28px;font-weight:800;color:var(--text);line-height:1.1}
+.capital-country{font-size:13px;color:var(--muted);margin-top:4px}
+/* compass */
+.compass-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.compass-ring{width:220px;height:220px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);position:relative;box-shadow:inset 0 0 40px rgba(0,229,180,.04),0 0 40px rgba(0,0,0,.4)}
+.clabels{position:absolute;inset:0;pointer-events:none}
+.clabel{position:absolute;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;width:20px;height:20px}
+.clabel.n{top:10px;left:50%;transform:translateX(-50%);color:var(--danger)}
+.clabel.s{bottom:10px;left:50%;transform:translateX(-50%);color:var(--muted)}
+.clabel.e{right:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.clabel.w{left:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
+/* rotating dial (needle rotates opposite to phone heading) */
+.compass-dial{position:absolute;inset:0;will-change:transform}
+.needle-wrap{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.needle-n{width:8px;height:68px;background:linear-gradient(to bottom,var(--danger),rgba(255,77,109,.5));clip-path:polygon(50% 0%,100% 100%,0% 100%)}
+.needle-s{width:8px;height:58px;background:linear-gradient(to top,var(--muted),rgba(107,122,153,.3));clip-path:polygon(0% 0%,100% 0%,50% 100%)}
+.needle-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--bg3);border:2px solid var(--accent);z-index:3;box-shadow:0 0 12px rgba(0,229,180,.4)}
+/* target arrow */
+.target-wrap{position:absolute;inset:0;display:none;z-index:2}
+.target-wrap.visible{display:block}
+.target-line{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:3px;height:88px;background:linear-gradient(to bottom,var(--accent),transparent);border-radius:2px}
+.target-tip{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:12px solid var(--accent)}
+/* heading text */
+.heading-display{display:flex;align-items:center;gap:1rem}
+.heading-val{font-family:'Space Mono',monospace;font-size:28px;color:var(--text);min-width:70px;text-align:center}
+.heading-dir{font-size:13px;color:var(--muted);min-width:40px}
+/* result */
+.result-panel{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1rem 1.25rem}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.result-row:last-child{border-bottom:none}
+.rlabel{color:var(--muted)}
+.rval{font-family:'Space Mono',monospace;color:var(--text)}
+.score-display{text-align:center;padding:.75rem 0 .25rem}
+.score-num{font-size:54px;font-weight:800;font-family:'Space Mono',monospace;line-height:1}
+.score-sub{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
+.score-emoji{font-size:26px;margin-top:6px}
+/* buttons */
+.btn-row{width:100%;display:flex;gap:10px}
+.btn{flex:1;padding:1rem;border-radius:14px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:15px;font-weight:600;transition:transform .1s,opacity .1s;letter-spacing:.02em}
+.btn:active{transform:scale(.97);opacity:.85}
+.btn-main{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;flex:2}
+/* notice */
+.notice{width:100%;background:rgba(255,190,11,.1);border:1px solid rgba(255,190,11,.25);border-radius:12px;padding:.75rem 1rem;font-size:12px;color:var(--warn);line-height:1.6}
+/* debug */
+.debug-bar{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.4rem .75rem;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:none}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="app">
+
+  <div class="header">
+    <div class="logo" id="logoBtn">Kompass<span>jakt</span></div>
+    <div class="header-sub">Bergen → Verden</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="statR">0</div><div class="stat-lbl">Runder</div></div>
+    <div class="stat"><div class="stat-num" id="statA">—</div><div class="stat-lbl">Snitt</div></div>
+    <div class="stat"><div class="stat-num" id="statB">—</div><div class="stat-lbl">Beste</div></div>
+  </div>
+
+  <!-- IDLE -->
+  <div class="idle-screen" id="idleScreen">
+    <div class="idle-icon">🧭</div>
+    <div class="idle-title">Kompassjakt</div>
+    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg i retningen du tror den ligger, og lås inn kompassretningen.</div>
+  </div>
+
+  <!-- GAME -->
+  <div id="aimScreen" style="display:none;width:100%;flex-direction:column;align-items:center;gap:.9rem">
+    <div class="capital-card">
+      <div class="phase-pill" id="phasePill">Sikt inn</div>
+      <div class="capital-name" id="capitalName">—</div>
+      <div class="capital-country" id="capitalCountry">—</div>
+    </div>
+
+    <div class="compass-section">
+      <div class="compass-ring">
+        <div class="clabels">
+          <span class="clabel n">N</span>
+          <span class="clabel s">S</span>
+          <span class="clabel e">Ø</span>
+          <span class="clabel w">V</span>
+        </div>
+        <div class="compass-dial" id="compassDial">
+          <div class="needle-wrap">
+            <div class="needle-n"></div>
+            <div class="needle-s"></div>
+          </div>
+        </div>
+        <div class="target-wrap" id="targetWrap">
+          <div class="target-line"></div>
+          <div class="target-tip"></div>
+        </div>
+        <div class="needle-center"></div>
+      </div>
+      <div class="heading-display">
+        <div class="heading-val" id="headingVal">—°</div>
+        <div class="heading-dir" id="headingDir">—</div>
+      </div>
+    </div>
+    <div class="debug-bar" id="debugBar">debug</div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="resultPanel" class="result-panel" style="display:none">
+    <div class="score-display">
+      <div class="score-num" id="scoreNum">—</div>
+      <div class="score-sub">Nøyaktighet</div>
+      <div class="score-emoji" id="scoreEmoji">—</div>
+    </div>
+    <div class="result-row"><span class="rlabel">Riktig retning</span><span class="rval" id="resCorrect">—</span></div>
+    <div class="result-row"><span class="rlabel">Din retning</span><span class="rval" id="resYours">—</span></div>
+    <div class="result-row"><span class="rlabel">Avvik</span><span class="rval" id="resDiff">—</span></div>
+  </div>
+
+  <div class="notice" id="notice" style="display:none"></div>
+
+  <div class="btn-row">
+    <button class="btn btn-main" id="mainBtn" onclick="onMainBtn()">Start spill</button>
+  </div>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────
+let phase = 'idle';
+let currentCapital = null;
+let currentHeading = 0;
+let compassStarted = false;
+let gotAbsolute = false;
+let lastIdx = -1;
+let rounds = 0, scores = [];
+let debugTaps = 0, debugOn = false;
+let headingSource = 'none';
+
+// ── Bergen coordinates ─────────────────────────────────────
+const USER_LAT = 60.39, USER_LON = 5.32;
+
+// ── Capitals ───────────────────────────────────────────────
+const CAPITALS = [
+  {n:"Tokyo",c:"Japan",lat:35.68,lon:139.69},{n:"Delhi",c:"India",lat:28.61,lon:77.21},
+  {n:"Kairo",c:"Egypt",lat:30.04,lon:31.24},{n:"London",c:"Storbritannia",lat:51.51,lon:-0.13},
+  {n:"Paris",c:"Frankrike",lat:48.86,lon:2.35},{n:"Washington D.C.",c:"USA",lat:38.91,lon:-77.04},
+  {n:"Canberra",c:"Australia",lat:-35.28,lon:149.13},{n:"Brasília",c:"Brasil",lat:-15.78,lon:-47.93},
+  {n:"Beijing",c:"Kina",lat:39.91,lon:116.39},{n:"Moskva",c:"Russland",lat:55.75,lon:37.62},
+  {n:"Ottawa",c:"Canada",lat:45.42,lon:-75.7},{n:"Berlin",c:"Tyskland",lat:52.52,lon:13.41},
+  {n:"Roma",c:"Italia",lat:41.9,lon:12.5},{n:"Madrid",c:"Spania",lat:40.42,lon:-3.7},
+  {n:"Buenos Aires",c:"Argentina",lat:-34.6,lon:-58.38},{n:"Nairobi",c:"Kenya",lat:-1.29,lon:36.82},
+  {n:"Seoul",c:"Sør-Korea",lat:37.57,lon:126.98},{n:"Bangkok",c:"Thailand",lat:13.75,lon:100.52},
+  {n:"Jakarta",c:"Indonesia",lat:-6.21,lon:106.85},{n:"Mexico City",c:"Mexico",lat:19.43,lon:-99.13},
+  {n:"Ankara",c:"Tyrkia",lat:39.93,lon:32.86},{n:"Teheran",c:"Iran",lat:35.69,lon:51.39},
+  {n:"Riyadh",c:"Saudi-Arabia",lat:24.69,lon:46.72},{n:"Addis Abeba",c:"Etiopia",lat:9.03,lon:38.74},
+  {n:"Havana",c:"Cuba",lat:23.14,lon:-82.36},{n:"Lima",c:"Peru",lat:-12.04,lon:-77.03},
+  {n:"Warszawa",c:"Polen",lat:52.23,lon:21.01},{n:"Stockholm",c:"Sverige",lat:59.33,lon:18.07},
+  {n:"Helsinki",c:"Finland",lat:60.17,lon:24.94},{n:"Praha",c:"Tsjekkia",lat:50.08,lon:14.44},
+  {n:"Wien",c:"Østerrike",lat:48.21,lon:16.37},{n:"Amsterdam",c:"Nederland",lat:52.37,lon:4.9},
+  {n:"Lisboa",c:"Portugal",lat:38.72,lon:-9.14},{n:"Athen",c:"Hellas",lat:37.98,lon:23.73},
+  {n:"Budapest",c:"Ungarn",lat:47.5,lon:19.04},{n:"Kyiv",c:"Ukraina",lat:50.45,lon:30.52},
+  {n:"Reykjavik",c:"Island",lat:64.14,lon:-21.94},{n:"Kabul",c:"Afghanistan",lat:34.53,lon:69.17},
+  {n:"Islamabad",c:"Pakistan",lat:33.72,lon:73.04},{n:"Dhaka",c:"Bangladesh",lat:23.81,lon:90.41},
+  {n:"Hanoi",c:"Vietnam",lat:21.03,lon:105.85},{n:"Manila",c:"Filippinene",lat:14.6,lon:120.98},
+  {n:"Singapore",c:"Singapore",lat:1.35,lon:103.82},{n:"Kuala Lumpur",c:"Malaysia",lat:3.15,lon:101.7},
+  {n:"Lagos",c:"Nigeria",lat:6.52,lon:3.38},{n:"Accra",c:"Ghana",lat:5.55,lon:-0.2},
+  {n:"Kinshasa",c:"DR Kongo",lat:-4.32,lon:15.32},{n:"Cape Town",c:"Sør-Afrika",lat:-33.93,lon:18.42},
+  {n:"Algier",c:"Algerie",lat:36.74,lon:3.06},{n:"Rabat",c:"Marokko",lat:33.99,lon:-6.85},
+  {n:"Ulaanbaatar",c:"Mongolia",lat:47.91,lon:106.88},{n:"Astana",c:"Kasakhstan",lat:51.18,lon:71.45},
+  {n:"Bagdad",c:"Irak",lat:33.34,lon:44.4},{n:"Doha",c:"Qatar",lat:25.29,lon:51.53},
+  {n:"Abu Dhabi",c:"UAE",lat:24.47,lon:54.37},{n:"Baku",c:"Aserbajdsjan",lat:40.41,lon:49.87},
+  {n:"Minsk",c:"Hviterussland",lat:53.9,lon:27.57},{n:"Riga",c:"Latvia",lat:56.95,lon:24.11},
+  {n:"Tallinn",c:"Estland",lat:59.44,lon:24.75},{n:"Zagreb",c:"Kroatia",lat:45.81,lon:15.98},
+  {n:"Beograd",c:"Serbia",lat:44.8,lon:20.46},{n:"Sofia",c:"Bulgaria",lat:42.7,lon:23.32},
+  {n:"Wellington",c:"New Zealand",lat:-41.29,lon:174.78},{n:"Santiago",c:"Chile",lat:-33.46,lon:-70.65},
+  {n:"Bogotá",c:"Colombia",lat:4.71,lon:-74.07},{n:"Amman",c:"Jordan",lat:31.95,lon:35.93},
+  {n:"Tashkent",c:"Usbekistan",lat:41.3,lon:69.27},{n:"Kathmandu",c:"Nepal",lat:27.71,lon:85.32},
+];
+
+// ── Math ───────────────────────────────────────────────────
+function toRad(d){return d*Math.PI/180}
+function toDeg(r){return r*180/Math.PI}
+function bearingTo(toLat,toLon){
+  const la1=toRad(USER_LAT),la2=toRad(toLat),dL=toRad(toLon-USER_LON);
+  const y=Math.sin(dL)*Math.cos(la2);
+  const x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dL);
+  return(toDeg(Math.atan2(y,x))+360)%360;
+}
+function angleDiff(a,b){let d=Math.abs(a-b)%360;return d>180?360-d:d}
+function scoreFromDiff(d){return Math.max(0,Math.round(100*(1-d/180)))}
+function dirLabel(deg){
+  const dirs=['N','NNØ','NØ','ØNØ','Ø','ØSØ','SØ','SSØ','S','SSV','SV','VSV','V','VNV','NV','NNV'];
+  return dirs[Math.round(deg/22.5)%16];
+}
+function scoreColor(s){return s>=90?'#00e5b4':s>=70?'#9fdd5b':s>=50?'#ffbe0b':'#ff4d6d'}
+function scoreEmoji(s){return s>=95?'🎯':s>=80?'🌟':s>=60?'👍':s>=40?'😅':'🙈'}
+
+// ── Compass ───────────────────────────────────────────────
+// applyHeading: called from any sensor source with the computed compass heading (0=N, CW)
+function applyHeading(h, src) {
+  if (h === null || isNaN(h)) return;
+  currentHeading = (h + 360) % 360;
+  headingSource = src;
+  if (phase === 'aiming') {
+    // Rotate the dial opposite to heading so the N needle always points to true north on screen
+    document.getElementById('compassDial').style.transform = `rotate(${-currentHeading}deg)`;
+    document.getElementById('headingVal').textContent = Math.round(currentHeading) + '°';
+    document.getElementById('headingDir').textContent = dirLabel(currentHeading);
+    if (debugOn) showDebug(`hdg:${currentHeading.toFixed(1)}° src:${src}`);
+  }
+}
+
+// Android Chrome 67+: deviceorientationabsolute gives alpha=0 when pointing north
+function onAbsolute(e) {
+  if (e.alpha === null) return;
+  gotAbsolute = true;
+  // alpha increases CCW, so heading = 360 - alpha
+  applyHeading((360 - e.alpha + 360) % 360, 'abs');
+  if (debugOn) showDebug(`abs α:${e.alpha?.toFixed(1)} β:${e.beta?.toFixed(1)} γ:${e.gamma?.toFixed(1)}`);
+}
+
+// Fallback for iOS and older Android
+function onOrientation(e) {
+  // If absolute events are arriving, ignore non-absolute
+  if (gotAbsolute) return;
+  if (e.alpha === null) return;
+
+  if (typeof e.webkitCompassHeading === 'number' && e.webkitCompassHeading >= 0) {
+    // iOS: webkitCompassHeading is already true-north clockwise heading
+    applyHeading(e.webkitCompassHeading, 'ios');
+    if (debugOn) showDebug(`ios wkCH:${e.webkitCompassHeading.toFixed(1)}`);
+  } else {
+    // Android relative (no absolute support): alpha=0 is the phone's start orientation
+    // This is imprecise but better than nothing
+    applyHeading((360 - e.alpha + 360) % 360, 'rel');
+    if (debugOn) showDebug(`rel α:${e.alpha?.toFixed(1)}`);
+  }
+}
+
+function showDebug(txt) {
+  document.getElementById('debugBar').textContent = txt;
+}
+
+async function startCompass() {
+  if (compassStarted) return;
+  compassStarted = true;
+
+  // iOS 13+ requires explicit permission request
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    try {
+      const res = await DeviceOrientationEvent.requestPermission();
+      if (res !== 'granted') {
+        showNotice('⚠️ Kompasstillatelse avslått. Gå til Innstillinger > Safari og aktiver bevegelse og retning.');
+        return;
+      }
+    } catch(err) {
+      showNotice('⚠️ Feil ved tillatelse: ' + err.message);
+      return;
+    }
+  }
+
+  // Register both event types — absolute preferred, orientation as fallback
+  window.addEventListener('deviceorientationabsolute', onAbsolute, true);
+  window.addEventListener('deviceorientation', onOrientation, true);
+
+  // After 2s warn if compass is still silent
+  setTimeout(() => {
+    if (headingSource === 'none') {
+      showNotice('⚠️ Kompasset svarer ikke. Prøv: åpne filen direkte i Chrome (ikke fra Filer-appen), og sjekk at Chrome har tilgang til bevegelsessensorer i telefonens innstillinger.');
+    }
+  }, 2000);
+}
+
+// ── UI helpers ─────────────────────────────────────────────
+function showNotice(msg){const el=document.getElementById('notice');el.textContent=msg;el.style.display='block'}
+function hideNotice(){document.getElementById('notice').style.display='none'}
+function updateStats(){
+  document.getElementById('statR').textContent=rounds;
+  if(!scores.length){document.getElementById('statA').textContent='—';document.getElementById('statB').textContent='—';}
+  else{
+    document.getElementById('statA').textContent=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)+'%';
+    document.getElementById('statB').textContent=Math.max(...scores)+'%';
+  }
+}
+
+// ── Game flow ─────────────────────────────────────────────
+async function startGame(){
+  await startCompass();
+  nextCity();
+}
+
+function nextCity(){
+  let idx;
+  do{idx=Math.floor(Math.random()*CAPITALS.length)}while(idx===lastIdx&&CAPITALS.length>1);
+  lastIdx=idx;
+  currentCapital=CAPITALS[idx];
+  phase='aiming';
+
+  document.getElementById('idleScreen').style.display='none';
+  document.getElementById('aimScreen').style.display='flex';
+  document.getElementById('resultPanel').style.display='none';
+  const tw=document.getElementById('targetWrap');
+  tw.classList.remove('visible');
+  tw.style.transform='';
+  hideNotice();
+
+  // Snap dial to current heading instantly (no transition)
+  const dial=document.getElementById('compassDial');
+  dial.style.transition='none';
+  dial.style.transform=`rotate(${-currentHeading}deg)`;
+  requestAnimationFrame(()=>{dial.style.transition='transform 0.12s ease-out'});
+
+  document.getElementById('headingVal').textContent=Math.round(currentHeading)+'°';
+  document.getElementById('headingDir').textContent=dirLabel(currentHeading);
+  document.getElementById('phasePill').textContent='Sikt inn';
+  document.getElementById('phasePill').className='phase-pill';
+  document.getElementById('capitalName').textContent=currentCapital.n;
+  document.getElementById('capitalCountry').textContent=currentCapital.c;
+  document.getElementById('mainBtn').textContent='📍 Lås inn retning';
+  if(debugOn)document.getElementById('debugBar').style.display='block';
+}
+
+function lockHeading(){
+  if(phase!=='aiming')return;
+  phase='result';
+
+  const locked=Math.round(currentHeading);
+  const correct=Math.round(bearingTo(currentCapital.lat,currentCapital.lon));
+  const diff=Math.round(angleDiff(locked,correct));
+  const score=scoreFromDiff(diff);
+  rounds++;scores.push(score);updateStats();
+
+  // Freeze dial
+  const dial=document.getElementById('compassDial');
+  dial.style.transition='none';
+  dial.style.transform=`rotate(${-locked}deg)`;
+
+  // Target arrow:
+  // The dial is rotated to -locked. A child at CSS rotate(X) appears on screen at (X - locked).
+  // We want screen angle = correct, so X - locked = correct → X = correct + locked.
+  const tw=document.getElementById('targetWrap');
+  tw.style.transition='none';
+  tw.style.transform=`rotate(${correct+locked}deg)`;
+  requestAnimationFrame(()=>{
+    tw.classList.add('visible');
+    tw.style.transition='transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+  });
+
+  document.getElementById('phasePill').textContent='Resultat';
+  document.getElementById('phasePill').className='phase-pill result';
+  document.getElementById('resCorrect').textContent=correct+'° ('+dirLabel(correct)+')';
+  document.getElementById('resYours').textContent=locked+'° ('+dirLabel(locked)+')';
+  document.getElementById('resDiff').textContent=diff+'° avvik';
+  const sn=document.getElementById('scoreNum');
+  sn.textContent=score+'%';sn.style.color=scoreColor(score);
+  document.getElementById('scoreEmoji').textContent=scoreEmoji(score);
+  document.getElementById('resultPanel').style.display='block';
+  document.getElementById('mainBtn').textContent='➡ Neste by';
+}
+
+function onMainBtn(){
+  if(phase==='idle') startGame();
+  else if(phase==='aiming') lockHeading();
+  else if(phase==='result') nextCity();
+}
+
+// ── Debug (tap logo 5×) ────────────────────────────────────
+document.getElementById('logoBtn').addEventListener('click',()=>{
+  debugTaps++;
+  if(debugTaps>=5){
+    debugTaps=0;debugOn=!debugOn;
+    document.getElementById('debugBar').style.display=debugOn&&phase==='aiming'?'block':'none';
+  }
+});
+
+// ── Init ───────────────────────────────────────────────────
+updateStats();
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

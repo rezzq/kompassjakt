@@ -21,6 +21,10 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .header{width:100%;display:flex;justify-content:space-between;align-items:center;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
 .logo{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;user-select:none}
 .logo span{color:var(--muted)}
+.mode-badge{font-family:'Space Mono',monospace;font-size:10px;padding:3px 8px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
+.mode-badge.kart{border-color:rgba(0,119,255,.4);color:#60a5fa;background:rgba(0,119,255,.1)}
+.mode-badge.globus{border-color:rgba(0,229,180,.4);color:var(--accent);background:rgba(0,229,180,.1)}
+.mode-badge.begge{border-color:rgba(255,190,11,.4);color:var(--warn);background:rgba(255,190,11,.1)}
 .location-bar{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.6rem 1rem;display:flex;align-items:center;gap:.6rem;font-size:12px}
 .loc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .loc-dot.searching{background:var(--warn);animation:pulse 1.2s infinite}
@@ -33,10 +37,29 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .stat{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.6rem .5rem;text-align:center}
 .stat-num{font-family:'Space Mono',monospace;font-size:18px;color:var(--text)}
 .stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
-.idle-screen{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;padding:1.5rem 0}
-.idle-icon{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,180,.15),transparent 70%);border:1px solid rgba(0,229,180,.3);display:flex;align-items:center;justify-content:center;font-size:40px}
-.idle-title{font-size:26px;font-weight:800}
-.idle-desc{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px}
+
+/* ── MODE SELECT ─────────────────────────────────────── */
+.mode-screen{width:100%;display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1rem 0}
+.mode-title{font-size:22px;font-weight:800;text-align:center}
+.mode-sub{font-size:13px;color:var(--muted);text-align:center;max-width:300px;line-height:1.5}
+.mode-cards{width:100%;display:flex;flex-direction:column;gap:.75rem}
+.mode-card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1rem 1.25rem;cursor:pointer;transition:border-color .15s,background .15s;display:flex;align-items:center;gap:1rem;-webkit-tap-highlight-color:transparent}
+.mode-card:active{background:var(--bg3)}
+.mode-card.kart{border-color:rgba(0,119,255,.3)}
+.mode-card.kart:hover{border-color:rgba(0,119,255,.6);background:rgba(0,119,255,.05)}
+.mode-card.globus{border-color:rgba(0,229,180,.3)}
+.mode-card.globus:hover{border-color:rgba(0,229,180,.6);background:rgba(0,229,180,.05)}
+.mode-card.begge{border-color:rgba(255,190,11,.3)}
+.mode-card.begge:hover{border-color:rgba(255,190,11,.6);background:rgba(255,190,11,.05)}
+.mode-icon{font-size:36px;flex-shrink:0;width:48px;text-align:center}
+.mode-info{flex:1}
+.mode-name{font-size:16px;font-weight:700;margin-bottom:.25rem}
+.mode-card.kart .mode-name{color:#60a5fa}
+.mode-card.globus .mode-name{color:var(--accent)}
+.mode-card.begge .mode-name{color:var(--warn)}
+.mode-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ── GAME SCREEN ─────────────────────────────────────── */
 .capital-card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.25rem;text-align:center;position:relative;overflow:hidden}
 .capital-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
 .phase-pill{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:.6rem;background:rgba(0,229,180,.12);color:var(--accent);border:1px solid rgba(0,229,180,.25)}
@@ -48,20 +71,32 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .heading-row{display:flex;align-items:baseline;gap:.5rem}
 .heading-val{font-family:'Space Mono',monospace;font-size:32px;color:var(--text)}
 .heading-dir{font-size:14px;color:var(--muted)}
+
+/* ── LEGEND ─────────────────────────────────────────── */
+.legend{display:flex;gap:1rem;font-size:11px}
+.legend-item{display:flex;align-items:center;gap:.35rem;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+
+/* ── RESULT ─────────────────────────────────────────── */
 .result-panel{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1rem 1.25rem}
 .result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
 .result-row:last-child{border-bottom:none}
 .rlabel{color:var(--muted)}
 .rval{font-family:'Space Mono',monospace;color:var(--text)}
+.rval.green{color:var(--accent)}
+.rval.blue{color:#60a5fa}
 .score-display{text-align:center;padding:.75rem 0 .25rem}
 .score-num{font-size:54px;font-weight:800;font-family:'Space Mono',monospace;line-height:1}
 .score-sub{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
 .score-emoji{font-size:26px;margin-top:6px}
+
+/* ── BUTTONS ─────────────────────────────────────────── */
 .btn-row{width:100%;display:flex;gap:10px}
 .btn{flex:1;padding:1rem;border-radius:14px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:15px;font-weight:600;transition:transform .1s,opacity .1s;letter-spacing:.02em}
 .btn:active{transform:scale(.97);opacity:.85}
 .btn-main{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;flex:2}
 .btn-main:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-secondary{background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-size:13px;padding:.75rem}
 .notice{width:100%;background:rgba(255,190,11,.1);border:1px solid rgba(255,190,11,.25);border-radius:12px;padding:.75rem 1rem;font-size:12px;color:var(--warn);line-height:1.6}
 </style>
 </head>
@@ -71,7 +106,7 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 
   <div class="header">
     <div class="logo">Kompass<span>jakt</span></div>
-    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)">v9</div>
+    <div class="mode-badge" id="modeBadge">—</div>
   </div>
 
   <div class="location-bar">
@@ -85,12 +120,40 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
     <div class="stat"><div class="stat-num" id="statB">—</div><div class="stat-lbl">Beste</div></div>
   </div>
 
-  <div class="idle-screen" id="idleScreen">
-    <div class="idle-icon">🧭</div>
-    <div class="idle-title">Kompassjakt</div>
-    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg mot den og lås inn retningen.</div>
+  <!-- MODE SELECT -->
+  <div id="modeScreen" class="mode-screen">
+    <div class="mode-title">🧭 Kompassjakt</div>
+    <div class="mode-sub">Velg spillmodus — pek mot en tilfeldig verdenshovedstad med kompasset ditt</div>
+    <div class="mode-cards">
+
+      <div class="mode-card kart" onclick="selectMode('kart')">
+        <div class="mode-icon">🗺️</div>
+        <div class="mode-info">
+          <div class="mode-name">Kartmodus</div>
+          <div class="mode-desc">Pek mot der byen <em>ser ut</em> å ligge på et flatt verdenskart. Seoul peker mot SØ fra Norge — intuitivt og enkelt.</div>
+        </div>
+      </div>
+
+      <div class="mode-card globus" onclick="selectMode('globus')">
+        <div class="mode-icon">🌍</div>
+        <div class="mode-info">
+          <div class="mode-name">Globusmodus</div>
+          <div class="mode-desc">Storsirkelnavigasjon — slik fly og skip faktisk navigerer. Seoul er NØ fra Norge på en globus fordi det er korteste vei over Arktis.</div>
+        </div>
+      </div>
+
+      <div class="mode-card begge" onclick="selectMode('begge')">
+        <div class="mode-icon">🌐</div>
+        <div class="mode-info">
+          <div class="mode-name">Kombinert</div>
+          <div class="mode-desc">Se begge svar samtidig: blå pil = kartretning, grønn pil = globusretning. Lær forskjellen mellom flat og sfærisk navigasjon.</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
+  <!-- GAME -->
   <div id="gameScreen" style="display:none;width:100%;flex-direction:column;align-items:center;gap:.9rem">
 
     <div class="capital-card">
@@ -102,175 +165,118 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 
     <div class="compass-section">
       <!--
-        KOMPASS — roterende rose, slik et ekte kompass fungerer.
+        KOMPASS SVG 280×280, senter (140,140)
 
-        Koordinatsystem: SVG 280×280, senter = (140,140).
+        #compassRose  — roterer hele rosen med -heading (N/S/Ø/V beveger seg)
+        #targetGlobe  — grønn pil: storsirkel bearing (globus)  — rotate(globeBearing, 140,140)
+        #targetMap    — blå pil: kartbearing                    — rotate(mapBearing, 140,140)
 
-        ROTERENDE ROSE (#compassRose):
-          Hele rosen — gradringer, tall, N/S/Ø/V — roterer med -heading grader.
-          Når heading=90° (telefonen peker øst):
-            rosen roterer -90° → N-merket havner til venstre på skjermen (det stemmer,
-            nord er til venstre når du peker øst) ✓
-
-        FAST PEKER (øverst, rød trekant):
-          En liten rød trekant ytterst på toppen av kompasset.
-          Den roterer IKKE — peker alltid opp på skjermen.
-          Det du leser av under pekeren = retningen du holder mot.
-
-        GRØNN MÅLPIL (#targetArrow):
-          Vises KUN etter lås.
-          Peker fra senter mot kanten ved bearing = correctBearing° fra nord.
-          Siden rosen er rotert -heading, og pilen er i absolutt skjermrom:
-            Pilen settes til rotate(correct, 140, 140) i absolutt skjermrom.
-          Grønn pil ved riktig retning — uavhengig av kompassrose. ✓
-
-        VIKTIG: setHeading() oppdaterer KUN compassRose, aldri targetArrow.
-        targetArrow settes én gang i lockHeading() og fryses.
+        Begge piler er søsken til compassRose = absolutt skjermrom.
+        rotate(X, 140, 140) → pil peker X° fra nord på skjermen.
+        Pil tegnet med spiss MOT TOPPEN (mot y=15) = peker nord ved rotate(0).
       -->
       <svg id="compassSvg" width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
 
-        <!-- Ytre ramme (fast) -->
-        <circle cx="140" cy="140" r="138" fill="#0d1425" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+        <!-- Bakgrunn -->
+        <circle cx="140" cy="140" r="138" fill="#0d1425" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
 
-        <!-- === ROTERENDE KOMPASSROSE === -->
+        <!-- Roterende kompassrose -->
         <g id="compassRose" transform="rotate(0,140,140)">
+          <!-- Tikker hvert 10° -->
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(10  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(20  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(30  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(40  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(50  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="26" stroke="rgba(255,255,255,.4)" stroke-width="2"   transform="rotate(60  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(70  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(80  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="30" stroke="rgba(255,255,255,.5)" stroke-width="2.5" transform="rotate(90  140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(100 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(110 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="26" stroke="rgba(255,255,255,.4)" stroke-width="2"   transform="rotate(120 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(130 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(140 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(150 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(160 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(170 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="30" stroke="rgba(255,255,255,.5)" stroke-width="2.5" transform="rotate(180 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(190 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(200 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="26" stroke="rgba(255,255,255,.4)" stroke-width="2"   transform="rotate(210 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(220 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(230 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(240 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(250 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(260 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="30" stroke="rgba(255,255,255,.5)" stroke-width="2.5" transform="rotate(270 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(280 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(290 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="26" stroke="rgba(255,255,255,.4)" stroke-width="2"   transform="rotate(300 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(310 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(320 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(330 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(340 140 140)"/>
+          <line x1="140" y1="5" x2="140" y2="18" stroke="rgba(255,255,255,.2)" stroke-width="1" transform="rotate(350 140 140)"/>
 
-          <!-- Gradmarkeringer hvert 5° (72 stk) -->
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(5   140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(10  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(15  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(20  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(25  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(30  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(35  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(40  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(45  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(50  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(55  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(60  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(65  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(70  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(75  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(80  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(85  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="28" stroke="rgba(255,255,255,.5)"  stroke-width="2"   transform="rotate(90  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(95  140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(100 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(105 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(110 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(115 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(120 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(125 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(130 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(135 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(140 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(145 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(150 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(155 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(160 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(165 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(170 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(175 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="28" stroke="rgba(255,255,255,.5)"  stroke-width="2"   transform="rotate(180 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(185 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(190 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(195 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(200 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(205 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(210 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(215 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(220 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(225 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(230 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(235 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(240 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(245 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(250 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(255 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(260 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(265 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="28" stroke="rgba(255,255,255,.5)"  stroke-width="2"   transform="rotate(270 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(275 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(280 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(285 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(290 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(295 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(300 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(305 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(310 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(315 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(320 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(325 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="22" stroke="rgba(255,255,255,.35)" stroke-width="1.5" transform="rotate(330 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(335 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(340 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(345 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(350 140 140)"/>
-          <line x1="140" y1="5"  x2="140" y2="16" stroke="rgba(255,255,255,.18)" stroke-width="1" transform="rotate(355 140 140)"/>
+          <!-- Nord-markering (rød, stor) -->
+          <line x1="140" y1="3" x2="140" y2="28" stroke="#ff4d6d" stroke-width="3.5"/>
+          <text x="140" y="50" text-anchor="middle" font-family="Space Mono" font-size="16" font-weight="700" fill="#ff4d6d">N</text>
 
-          <!-- N (nord) — rød, øverst på rosen ved heading=0 -->
-          <line x1="140" y1="3" x2="140" y2="30" stroke="#ff4d6d" stroke-width="3"/>
-          <text x="140" y="52" text-anchor="middle" font-family="Space Mono" font-size="18" font-weight="700" fill="#ff4d6d">N</text>
-
-          <!-- S (sør) -->
-          <text x="140" y="234" text-anchor="middle" font-family="Space Mono" font-size="15" fill="#6b7a99">S</text>
-
-          <!-- Ø (øst) -->
-          <text x="232" y="145" text-anchor="middle" font-family="Space Mono" font-size="15" fill="#6b7a99">Ø</text>
-
-          <!-- V (vest) -->
-          <text x="48" y="145" text-anchor="middle" font-family="Space Mono" font-size="15" fill="#6b7a99">V</text>
-
-        </g>
-        <!-- === SLUTT ROTERENDE ROSE === -->
-
-        <!-- Indre ring (fast) -->
-        <circle cx="140" cy="140" r="90" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-
-        <!-- === GRØNN MÅLPIL (absolutt skjermrom, fast etter lås) ===
-             Settes til rotate(correctBearing, 140, 140).
-             Pil peker fra senter mot toppen av SVG = nord = 0°.
-             rotate(correctBearing) dreier pilen correctBearing° med klokka = riktig retning.
-             ALDRI oppdatert av setHeading().
-        -->
-        <g id="targetArrow" transform="rotate(0,140,140)" display="none">
-          <line x1="140" y1="140" x2="140" y2="34" stroke="#00e5b4" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
-          <polygon points="140,20 131,42 149,42" fill="#00e5b4"/>
-          <!-- Liten sirkel ved kanten for lesbarhet -->
-          <circle cx="140" cy="25" r="5" fill="#00e5b4" opacity="0.4"/>
+          <!-- S, Ø, V -->
+          <text x="140" y="232" text-anchor="middle" font-family="Space Mono" font-size="14" fill="#6b7a99">S</text>
+          <text x="232" y="145" text-anchor="middle" font-family="Space Mono" font-size="14" fill="#6b7a99">Ø</text>
+          <text x="48"  y="145" text-anchor="middle" font-family="Space Mono" font-size="14" fill="#6b7a99">V</text>
         </g>
 
-        <!-- Sentrum (fast, over alt annet) -->
-        <circle cx="140" cy="140" r="12" fill="#0d1425" stroke="#00e5b4" stroke-width="2.5"/>
-        <circle cx="140" cy="140" r="5"  fill="#00e5b4"/>
+        <!-- GRØNN PIL — storsirkel/globus bearing (absolutt skjermrom) -->
+        <g id="targetGlobe" transform="rotate(0,140,140)" display="none">
+          <line x1="140" y1="140" x2="140" y2="36" stroke="#00e5b4" stroke-width="4" stroke-linecap="round"/>
+          <polygon points="140,18 131,40 149,40" fill="#00e5b4"/>
+        </g>
 
-        <!-- Fast peker øverst — rød trekant, viser retningen du holder -->
+        <!-- BLÅ PIL — kartbearing / flat map (absolutt skjermrom) -->
+        <g id="targetMap" transform="rotate(0,140,140)" display="none">
+          <line x1="140" y1="140" x2="140" y2="36" stroke="#4499ff" stroke-width="4" stroke-linecap="round" stroke-dasharray="8,4"/>
+          <polygon points="140,18 131,40 149,40" fill="#4499ff"/>
+        </g>
+
+        <!-- Sentrum -->
+        <circle cx="140" cy="140" r="12" fill="#0d1425" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+        <circle cx="140" cy="140" r="5"  fill="#e8edf5"/>
+
+        <!-- Fast peker øverst (rød trekant = retning du holder) -->
         <polygon points="140,2 133,18 147,18" fill="#ff4d6d"/>
-
       </svg>
 
+      <!-- Grader-visning i sanntid -->
       <div class="heading-row">
         <div class="heading-val" id="headingVal">—°</div>
         <div class="heading-dir" id="headingDir">—</div>
       </div>
+
+      <!-- Forklaring av piler (kun i "begge" og etter lås) -->
+      <div class="legend" id="legend" style="display:none">
+        <div class="legend-item"><div class="legend-dot" style="background:#00e5b4"></div>Globus (storsirkel)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4499ff"></div>Kart (flat)</div>
+      </div>
     </div>
   </div>
 
+  <!-- RESULTAT -->
   <div id="resultPanel" class="result-panel" style="display:none">
     <div class="score-display">
       <div class="score-num" id="scoreNum">—</div>
       <div class="score-sub">Nøyaktighet</div>
       <div class="score-emoji" id="scoreEmoji">—</div>
     </div>
-    <div class="result-row"><span class="rlabel">Riktig retning</span><span class="rval" id="resCorrect">—</span></div>
-    <div class="result-row"><span class="rlabel">Din retning</span><span class="rval" id="resYours">—</span></div>
-    <div class="result-row"><span class="rlabel">Avvik</span><span class="rval" id="resDiff">—</span></div>
-    <div class="result-row"><span class="rlabel">Fra posisjon</span><span class="rval" id="resFromPos">—</span></div>
+    <div id="resultRows"></div>
   </div>
 
   <div class="notice" id="notice" style="display:none"></div>
 
   <div class="btn-row">
+    <button class="btn btn-secondary" id="backBtn" onclick="goBack()" style="display:none">← Modus</button>
     <button class="btn btn-main" id="mainBtn" onclick="onMainBtn()" disabled>Henter posisjon…</button>
   </div>
 </div>
@@ -279,10 +285,11 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 // ════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════
-let phase = 'idle';
+let phase = 'mode';       // 'mode' | 'idle' | 'aiming' | 'result'
+let gameMode = null;      // 'kart' | 'globus' | 'begge'
 let currentCapital = null;
-let liveHeading  = 0;     // kontinuerlig fra sensor
-let lockedHeading = null; // satt én gang i lockHeading()
+let liveHeading  = 0;
+let lockedHeading = null;
 let compassStarted = false;
 let gotAbsolute = false;
 let lastIdx = -1;
@@ -290,7 +297,8 @@ let rounds = 0, scores = [];
 let userLat = null, userLon = null, userPlace = null;
 
 const compassRose  = document.getElementById('compassRose');
-const targetArrow  = document.getElementById('targetArrow');
+const targetGlobe  = document.getElementById('targetGlobe');
+const targetMap    = document.getElementById('targetMap');
 
 // ════════════════════════════════════════════════════════
 //  KAPITALER
@@ -332,6 +340,8 @@ const CAPITALS = [
   {n:"Tashkent",c:"Usbekistan",lat:41.3,lon:69.27},{n:"Kathmandu",c:"Nepal",lat:27.71,lon:85.32},
   {n:"Khartoum",c:"Sudan",lat:15.55,lon:32.53},{n:"Dakar",c:"Senegal",lat:14.72,lon:-17.47},
   {n:"Caracas",c:"Venezuela",lat:10.49,lon:-66.88},{n:"Colombo",c:"Sri Lanka",lat:6.93,lon:79.86},
+  {n:"Naypyidaw",c:"Myanmar",lat:19.74,lon:96.12},{n:"Lusaka",c:"Zambia",lat:-15.42,lon:28.28},
+  {n:"Harare",c:"Zimbabwe",lat:-17.83,lon:31.05},{n:"Tunis",c:"Tunisia",lat:36.82,lon:10.17},
 ];
 
 // ════════════════════════════════════════════════════════
@@ -340,11 +350,25 @@ const CAPITALS = [
 function toRad(d){return d*Math.PI/180}
 function toDeg(r){return r*180/Math.PI}
 
-function bearingBetween(fromLat,fromLon,toLat,toLon){
+// Storsirkel bearing (globus/ekte navigasjon)
+// Korteste vei på jordens overflate (fly, skip)
+function globeBearing(fromLat,fromLon,toLat,toLon){
   const la1=toRad(fromLat),la2=toRad(toLat),dL=toRad(toLon-fromLon);
   const y=Math.sin(dL)*Math.cos(la2);
   const x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dL);
   return(toDeg(Math.atan2(y,x))+360)%360;
+}
+
+// Kartbearing (flat map / intuitiv retning)
+// Retningen slik byen ser ut på et flatt verdenskart
+// Basert på lon/lat-differanse — der nord=opp, øst=høyre
+function mapBearing(fromLat,fromLon,toLat,toLon){
+  const dLat = toLat - fromLat;
+  const dLon = toLon - fromLon;
+  // Skaler dLon med cos(lat) for å kompensere for at
+  // lengdegrader er smalere ved høye breddegrader
+  const dLonScaled = dLon * Math.cos(toRad((fromLat+toLat)/2));
+  return(toDeg(Math.atan2(dLonScaled,dLat))+360)%360;
 }
 
 function distKm(la1,lo1,la2,lo2){
@@ -371,34 +395,35 @@ function startGPS(){
     userLat=pos.coords.latitude; userLon=pos.coords.longitude;
     document.getElementById('locDot').className='loc-dot ok';
     document.getElementById('locText').innerHTML=
-      `📍 ${userLat.toFixed(3)}°, ${userLon.toFixed(3)}° — identifiserer…`;
-    enableBtn();
+      `📍 ${userLat.toFixed(3)}°, ${userLon.toFixed(3)}°`;
+    // Enable start once GPS obtained
+    if(phase==='mode') enableModeCards();
     fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&zoom=10`)
       .then(r=>r.json()).then(d=>{
         const a=d.address||{};
         userPlace=a.city||a.town||a.village||a.county||a.country||null;
         document.getElementById('locText').innerHTML=
           `📍 <strong>${userPlace||'Ukjent'}</strong> (${userLat.toFixed(3)}°, ${userLon.toFixed(3)}°)`;
-      }).catch(()=>{userPlace=null});
+      }).catch(()=>{});
   },()=>{
     userLat=60.39;userLon=5.32;userPlace='Bergen (standard)';
-    setLocErr('GPS feilet — bruker Bergen som standard');
-    enableBtn();
+    document.getElementById('locDot').className='loc-dot err';
+    document.getElementById('locText').innerHTML=`⚠️ GPS feilet — bruker Bergen som standard`;
+    if(phase==='mode') enableModeCards();
   },{enableHighAccuracy:true,timeout:10000,maximumAge:60000});
 }
-function setLocErr(m){document.getElementById('locDot').className='loc-dot err';document.getElementById('locText').textContent=m}
-function enableBtn(){const b=document.getElementById('mainBtn');b.disabled=false;b.textContent='Start spill'}
+
+function enableModeCards(){
+  // Cards are always clickable, GPS just updates loc display
+  // Nothing to do here — cards are always clickable
+}
 
 // ════════════════════════════════════════════════════════
-//  KOMPASS — setHeading() er eneste funksjon som rører compassRose
+//  KOMPASS
 // ════════════════════════════════════════════════════════
 function setHeading(h){
-  liveHeading = (h+360)%360;
-
-  // Oppdater KUN under sikting
-  if(phase !== 'aiming') return;
-
-  // Roterende rose: rotate(-heading) så N alltid peker mot geografisk nord
+  liveHeading=(h+360)%360;
+  if(phase!=='aiming')return;
   compassRose.setAttribute('transform',`rotate(${-liveHeading},140,140)`);
   document.getElementById('headingVal').textContent=Math.round(liveHeading)+'°';
   document.getElementById('headingDir').textContent=dirLabel(liveHeading);
@@ -418,7 +443,6 @@ function onOrientation(e){
     setHeading((360-e.alpha)%360);
   }
 }
-
 async function startCompass(){
   if(compassStarted)return;
   compassStarted=true;
@@ -450,25 +474,55 @@ function updateStats(){
   }
 }
 
+function setModeBadge(m){
+  const b=document.getElementById('modeBadge');
+  b.textContent={kart:'🗺️ Kart',globus:'🌍 Globus',begge:'🌐 Begge'}[m]||'—';
+  b.className='mode-badge '+m;
+}
+
 // ════════════════════════════════════════════════════════
 //  SPILLFLYT
 // ════════════════════════════════════════════════════════
-async function startGame(){await startCompass();nextCity()}
+async function selectMode(m){
+  gameMode=m;
+  setModeBadge(m);
+  phase='idle';
+  document.getElementById('modeScreen').style.display='none';
+  document.getElementById('gameScreen').style.display='flex';
+  document.getElementById('backBtn').style.display='block';
+  document.getElementById('mainBtn').disabled=false;
+  document.getElementById('mainBtn').textContent='Start spill';
+  await startCompass();
+  nextCity();
+}
+
+function goBack(){
+  phase='mode';
+  gameMode=null;
+  document.getElementById('modeScreen').style.display='flex';
+  document.getElementById('gameScreen').style.display='none';
+  document.getElementById('resultPanel').style.display='none';
+  document.getElementById('backBtn').style.display='none';
+  document.getElementById('mainBtn').disabled=true;
+  document.getElementById('mainBtn').textContent='Henter posisjon…';
+  document.getElementById('modeBadge').textContent='—';
+  document.getElementById('modeBadge').className='mode-badge';
+  document.getElementById('legend').style.display='none';
+  targetGlobe.setAttribute('display','none');
+  targetMap.setAttribute('display','none');
+}
 
 function nextCity(){
   let idx;
   do{idx=Math.floor(Math.random()*CAPITALS.length)}while(idx===lastIdx&&CAPITALS.length>1);
   lastIdx=idx; currentCapital=CAPITALS[idx]; lockedHeading=null; phase='aiming';
 
-  document.getElementById('idleScreen').style.display='none';
-  document.getElementById('gameScreen').style.display='flex';
   document.getElementById('resultPanel').style.display='none';
+  document.getElementById('legend').style.display='none';
+  targetGlobe.setAttribute('display','none');
+  targetMap.setAttribute('display','none');
   hideNotice();
 
-  // Gjemmer grønn pil
-  targetArrow.setAttribute('display','none');
-
-  // Setter rosen til live heading
   compassRose.setAttribute('transform',`rotate(${-liveHeading},140,140)`);
   document.getElementById('headingVal').textContent=Math.round(liveHeading)+'°';
   document.getElementById('headingDir').textContent=dirLabel(liveHeading);
@@ -485,41 +539,76 @@ function nextCity(){
 function lockHeading(){
   if(phase!=='aiming')return;
 
-  // 1. Fryser heading
-  lockedHeading = Math.round(liveHeading);
-
-  // 2. Setter phase = result → setHeading() gjør ingenting lenger
+  lockedHeading=Math.round(liveHeading);
   phase='result';
 
-  // 3. Beregner riktig retning
-  const correct = Math.round(bearingBetween(userLat,userLon,currentCapital.lat,currentCapital.lon));
+  // Beregn begge retninger
+  const gBearing=Math.round(globeBearing(userLat,userLon,currentCapital.lat,currentCapital.lon));
+  const mBearing=Math.round(mapBearing(userLat,userLon,currentCapital.lat,currentCapital.lon));
 
-  // 4. Fryser rosen ved lockedHeading
+  // Frys rose
   compassRose.setAttribute('transform',`rotate(${-lockedHeading},140,140)`);
 
-  // 5. Viser grønn pil
-  //    targetArrow er en SØSKEN til compassRose — den roterer i absolutt skjermrom.
-  //    rotate(correct, 140, 140): pil peker mot toppen (nord=0°) ved rotate(0),
-  //    roterer correct° med klokka → peker mot correct° fra nord på skjermen. ✓
-  targetArrow.setAttribute('transform',`rotate(${correct},140,140)`);
-  targetArrow.setAttribute('display','block');
+  // Vis piler basert på modus
+  if(gameMode==='globus'||gameMode==='begge'){
+    targetGlobe.setAttribute('transform',`rotate(${gBearing},140,140)`);
+    targetGlobe.setAttribute('display','block');
+  }
+  if(gameMode==='kart'||gameMode==='begge'){
+    targetMap.setAttribute('transform',`rotate(${mBearing},140,140)`);
+    targetMap.setAttribute('display','block');
+  }
+  if(gameMode==='begge'){
+    document.getElementById('legend').style.display='flex';
+  }
 
-  // 6. Oppdaterer visning
+  // Oppdater heading-visning
   document.getElementById('headingVal').textContent=lockedHeading+'°';
   document.getElementById('headingDir').textContent=dirLabel(lockedHeading);
 
-  // 7. Score
-  const diff=Math.round(angleDiff(lockedHeading,correct));
-  const score=scoreFromDiff(diff);
+  // Score
+  let score, correctBearing;
+  if(gameMode==='kart'){
+    correctBearing=mBearing;
+    score=scoreFromDiff(Math.round(angleDiff(lockedHeading,mBearing)));
+  }else if(gameMode==='globus'){
+    correctBearing=gBearing;
+    score=scoreFromDiff(Math.round(angleDiff(lockedHeading,gBearing)));
+  }else{
+    // Begge: score basert på den du var nærmest
+    const diffG=angleDiff(lockedHeading,gBearing);
+    const diffM=angleDiff(lockedHeading,mBearing);
+    score=scoreFromDiff(Math.round(Math.min(diffG,diffM)));
+    correctBearing=diffG<diffM?gBearing:mBearing;
+  }
+
   rounds++;scores.push(score);updateStats();
+
+  // Resultatrader
+  let rows='';
+  if(gameMode==='kart'){
+    const diff=Math.round(angleDiff(lockedHeading,mBearing));
+    rows+=`<div class="result-row"><span class="rlabel">Kartretning 🗺️</span><span class="rval blue">${mBearing}° (${dirLabel(mBearing)})</span></div>`;
+    rows+=`<div class="result-row"><span class="rlabel">Din retning</span><span class="rval">${lockedHeading}° (${dirLabel(lockedHeading)})</span></div>`;
+    rows+=`<div class="result-row"><span class="rlabel">Avvik</span><span class="rval">${diff}°</span></div>`;
+  }else if(gameMode==='globus'){
+    const diff=Math.round(angleDiff(lockedHeading,gBearing));
+    rows+=`<div class="result-row"><span class="rlabel">Globusretning 🌍</span><span class="rval green">${gBearing}° (${dirLabel(gBearing)})</span></div>`;
+    rows+=`<div class="result-row"><span class="rlabel">Din retning</span><span class="rval">${lockedHeading}° (${dirLabel(lockedHeading)})</span></div>`;
+    rows+=`<div class="result-row"><span class="rlabel">Avvik</span><span class="rval">${Math.round(angleDiff(lockedHeading,gBearing))}°</span></div>`;
+  }else{
+    const dg=Math.round(angleDiff(lockedHeading,gBearing));
+    const dm=Math.round(angleDiff(lockedHeading,mBearing));
+    rows+=`<div class="result-row"><span class="rlabel">🌍 Globus (storsirkel)</span><span class="rval green">${gBearing}° (${dirLabel(gBearing)})</span></div>`;
+    rows+=`<div class="result-row"><span class="rlabel">🗺️ Kart (flat)</span><span class="rval blue">${mBearing}° (${dirLabel(mBearing)})</span></div>`;
+    rows+=`<div class="result-row"><span class="rlabel">Din retning</span><span class="rval">${lockedHeading}° (${dirLabel(lockedHeading)})</span></div>`;
+    rows+=`<div class="result-row"><span class="rlabel">Avvik globus / kart</span><span class="rval">${dg}° / ${dm}°</span></div>`;
+  }
+  rows+=`<div class="result-row"><span class="rlabel">Fra posisjon</span><span class="rval">${userPlace||(userLat.toFixed(2)+'°, '+userLon.toFixed(2)+'°')}</span></div>`;
+  document.getElementById('resultRows').innerHTML=rows;
 
   document.getElementById('phasePill').textContent='Resultat';
   document.getElementById('phasePill').className='phase-pill result';
-  document.getElementById('resCorrect').textContent=correct+'° ('+dirLabel(correct)+')';
-  document.getElementById('resYours').textContent=lockedHeading+'° ('+dirLabel(lockedHeading)+')';
-  document.getElementById('resDiff').textContent=diff+'° avvik';
-  document.getElementById('resFromPos').textContent=userPlace||(userLat.toFixed(2)+'°, '+userLon.toFixed(2)+'°');
-
   const sn=document.getElementById('scoreNum');
   sn.textContent=score+'%';sn.style.color=scoreColor(score);
   document.getElementById('scoreEmoji').textContent=scoreEmoji(score);
@@ -528,8 +617,7 @@ function lockHeading(){
 }
 
 function onMainBtn(){
-  if(phase==='idle')        startGame();
-  else if(phase==='aiming') lockHeading();
+  if(phase==='aiming')  lockHeading();
   else if(phase==='result') nextCity();
 }
 

@@ -12,53 +12,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0a0f1e;--bg2:#111827;--bg3:#1a2235;
-  --accent:#00e5b4;--accent2:#0077ff;
-  --danger:#ff4d6d;--warn:#ffbe0b;
-  --text:#e8edf5;--muted:#6b7a99;
-  --border:rgba(255,255,255,0.08);
-}
+:root{--bg:#0a0f1e;--bg2:#111827;--bg3:#1a2235;--accent:#00e5b4;--accent2:#0077ff;--danger:#ff4d6d;--warn:#ffbe0b;--text:#e8edf5;--muted:#6b7a99;--border:rgba(255,255,255,0.08)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif}
 body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;padding:env(safe-area-inset-top,12px) 0 env(safe-area-inset-bottom,20px)}
-.stars{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(1px 1px at 20% 15%,rgba(255,255,255,.5) 0%,transparent 100%),
-    radial-gradient(1px 1px at 75% 8%,rgba(255,255,255,.4) 0%,transparent 100%),
-    radial-gradient(1px 1px at 45% 30%,rgba(255,255,255,.3) 0%,transparent 100%),
-    radial-gradient(1px 1px at 90% 40%,rgba(255,255,255,.4) 0%,transparent 100%),
-    radial-gradient(1px 1px at 10% 60%,rgba(255,255,255,.3) 0%,transparent 100%),
-    radial-gradient(1px 1px at 60% 75%,rgba(255,255,255,.4) 0%,transparent 100%),
-    radial-gradient(1px 1px at 30% 88%,rgba(255,255,255,.3) 0%,transparent 100%)}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1px 1px at 20% 15%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 75% 8%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 45% 30%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 90% 40%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 10% 60%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 60% 75%,rgba(255,255,255,.4) 0%,transparent 100%)}
 .app{position:relative;z-index:1;width:100%;max-width:440px;padding:1.25rem 1.25rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.9rem}
-
-/* Header */
 .header{width:100%;display:flex;justify-content:space-between;align-items:center;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
 .logo{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;user-select:none}
 .logo span{color:var(--muted)}
-
-/* Location bar */
+/* Location */
 .location-bar{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.6rem 1rem;display:flex;align-items:center;gap:.6rem;font-size:12px}
-.location-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;box-shadow:0 0 6px var(--accent)}
-.location-dot.searching{background:var(--warn);box-shadow:0 0 6px var(--warn);animation:pulse 1.2s ease-in-out infinite}
-.location-dot.error{background:var(--danger);box-shadow:0 0 6px var(--danger)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.location-text{color:var(--muted);flex:1}
-.location-text strong{color:var(--text);font-weight:600}
-
+.loc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.loc-dot.searching{background:var(--warn);animation:pulse 1.2s infinite}
+.loc-dot.ok{background:var(--accent)}
+.loc-dot.err{background:var(--danger)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.loc-text{color:var(--muted);flex:1;line-height:1.4}
+.loc-text strong{color:var(--text)}
 /* Stats */
 .stats{width:100%;display:flex;gap:8px}
 .stat{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.6rem .5rem;text-align:center}
 .stat-num{font-family:'Space Mono',monospace;font-size:18px;color:var(--text)}
 .stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
-
 /* Idle */
 .idle-screen{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;padding:1.5rem 0}
 .idle-icon{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,180,.15),transparent 70%);border:1px solid rgba(0,229,180,.3);display:flex;align-items:center;justify-content:center;font-size:40px}
 .idle-title{font-size:26px;font-weight:800}
 .idle-desc{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px}
-
 /* Capital card */
 .capital-card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.25rem;text-align:center;position:relative;overflow:hidden}
 .capital-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
@@ -67,21 +48,29 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .capital-name{font-size:28px;font-weight:800;color:var(--text);line-height:1.1}
 .capital-country{font-size:13px;color:var(--muted);margin-top:4px}
 .capital-dist{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Space Mono',monospace}
-
 /* Compass */
 .compass-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:.75rem}
 .compass-ring{width:220px;height:220px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);position:relative;box-shadow:inset 0 0 40px rgba(0,229,180,.04),0 0 40px rgba(0,0,0,.4)}
-.clabels{position:absolute;inset:0;pointer-events:none}
+.clabels{position:absolute;inset:0;pointer-events:none;z-index:4}
 .clabel{position:absolute;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;width:20px;height:20px}
 .clabel.n{top:10px;left:50%;transform:translateX(-50%);color:var(--danger)}
 .clabel.s{bottom:10px;left:50%;transform:translateX(-50%);color:var(--muted)}
 .clabel.e{right:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
 .clabel.w{left:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
-.compass-dial{position:absolute;inset:0;will-change:transform}
+/*
+  COMPASS DESIGN:
+  - .compass-dial rotates by -heading so the N needle always points to true north on screen
+  - .target-wrap is a SIBLING of compass-dial (NOT inside it)
+    It lives in the same coordinate space as the ring (no parent rotation)
+    So target just needs rotate(correctBearing) directly — no offset needed
+*/
+.compass-dial{position:absolute;inset:0;will-change:transform;z-index:1}
 .needle-wrap{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
 .needle-n{width:8px;height:68px;background:linear-gradient(to bottom,var(--danger),rgba(255,77,109,.5));clip-path:polygon(50% 0%,100% 100%,0% 100%)}
 .needle-s{width:8px;height:58px;background:linear-gradient(to top,var(--muted),rgba(107,122,153,.3));clip-path:polygon(0% 0%,100% 0%,50% 100%)}
 .needle-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--bg3);border:2px solid var(--accent);z-index:3;box-shadow:0 0 12px rgba(0,229,180,.4)}
+/* target-wrap: absolute, same parent as compass-dial = compass-ring */
+/* rotate(N deg) means N degrees clockwise from 12-o'clock = north */
 .target-wrap{position:absolute;inset:0;display:none;z-index:2}
 .target-wrap.visible{display:block}
 .target-line{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:3px;height:88px;background:linear-gradient(to bottom,var(--accent),transparent);border-radius:2px}
@@ -89,7 +78,6 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .heading-display{display:flex;align-items:center;gap:1rem}
 .heading-val{font-family:'Space Mono',monospace;font-size:28px;color:var(--text);min-width:70px;text-align:center}
 .heading-dir{font-size:13px;color:var(--muted);min-width:40px}
-
 /* Result */
 .result-panel{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1rem 1.25rem}
 .result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
@@ -100,19 +88,15 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .score-num{font-size:54px;font-weight:800;font-family:'Space Mono',monospace;line-height:1}
 .score-sub{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
 .score-emoji{font-size:26px;margin-top:6px}
-
 /* Buttons */
 .btn-row{width:100%;display:flex;gap:10px}
 .btn{flex:1;padding:1rem;border-radius:14px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:15px;font-weight:600;transition:transform .1s,opacity .1s;letter-spacing:.02em}
 .btn:active{transform:scale(.97);opacity:.85}
 .btn-main{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;flex:2}
 .btn-main:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-/* Notice */
 .notice{width:100%;background:rgba(255,190,11,.1);border:1px solid rgba(255,190,11,.25);border-radius:12px;padding:.75rem 1rem;font-size:12px;color:var(--warn);line-height:1.6}
-
-/* Debug */
-.debug-bar{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.4rem .75rem;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:none}
+/* Debug bar */
+.debug-bar{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.4rem .75rem;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:none;line-height:1.6}
 </style>
 </head>
 <body>
@@ -121,13 +105,12 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 
   <div class="header">
     <div class="logo" id="logoBtn">Kompass<span>jakt</span></div>
-    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)" id="headerVersion">v3.0</div>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)">v4.0</div>
   </div>
 
-  <!-- Location bar -->
   <div class="location-bar">
-    <div class="location-dot searching" id="locDot"></div>
-    <div class="location-text" id="locText">Henter din posisjon…</div>
+    <div class="loc-dot searching" id="locDot"></div>
+    <div class="loc-text" id="locText">Henter posisjon…</div>
   </div>
 
   <div class="stats">
@@ -136,14 +119,12 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
     <div class="stat"><div class="stat-num" id="statB">—</div><div class="stat-lbl">Beste</div></div>
   </div>
 
-  <!-- IDLE -->
   <div class="idle-screen" id="idleScreen">
     <div class="idle-icon">🧭</div>
     <div class="idle-title">Kompassjakt</div>
-    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg mot den og lås inn retningen med kompasset — beregnet fra din faktiske posisjon.</div>
+    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg mot den og lås inn retningen — beregnet fra din faktiske posisjon.</div>
   </div>
 
-  <!-- GAME -->
   <div id="aimScreen" style="display:none;width:100%;flex-direction:column;align-items:center;gap:.9rem">
     <div class="capital-card">
       <div class="phase-pill" id="phasePill">Sikt inn</div>
@@ -154,18 +135,22 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 
     <div class="compass-section">
       <div class="compass-ring">
+        <!-- Fixed labels always visible -->
         <div class="clabels">
           <span class="clabel n">N</span>
           <span class="clabel s">S</span>
           <span class="clabel e">Ø</span>
           <span class="clabel w">V</span>
         </div>
+        <!-- Rotating dial: spins opposite to phone heading so red N always points north -->
         <div class="compass-dial" id="compassDial">
           <div class="needle-wrap">
             <div class="needle-n"></div>
             <div class="needle-s"></div>
           </div>
         </div>
+        <!-- Target arrow: child of compass-ring, NOT of compass-dial.
+             rotate(correctBearing) points directly to the correct city. -->
         <div class="target-wrap" id="targetWrap">
           <div class="target-line"></div>
           <div class="target-tip"></div>
@@ -180,7 +165,6 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
     <div class="debug-bar" id="debugBar">debug</div>
   </div>
 
-  <!-- RESULT -->
   <div id="resultPanel" class="result-panel" style="display:none">
     <div class="score-display">
       <div class="score-num" id="scoreNum">—</div>
@@ -200,23 +184,17 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
   </div>
 
 </div>
-
 <script>
 // ── State ─────────────────────────────────────────────────
 let phase = 'idle';
 let currentCapital = null;
-let currentHeading = 0;
+let currentHeading = 0;   // 0=Nord, 90=Øst, 180=Sør, 270=Vest
 let compassStarted = false;
-let gotAbsolute = false;
+let gotAbsoluteEvent = false;
 let lastIdx = -1;
 let rounds = 0, scores = [];
-let debugTaps = 0, debugOn = false;
-let headingSource = 'none';
-
-// ── User position (from GPS) ───────────────────────────────
-let userLat = null;
-let userLon = null;
-let userPlaceName = null;  // reverse-geocoded city name
+let debugOn = false, debugTaps = 0;
+let userLat = null, userLon = null, userPlace = null;
 
 // ── Capitals ───────────────────────────────────────────────
 const CAPITALS = [
@@ -254,30 +232,23 @@ const CAPITALS = [
   {n:"Wellington",c:"New Zealand",lat:-41.29,lon:174.78},{n:"Santiago",c:"Chile",lat:-33.46,lon:-70.65},
   {n:"Bogotá",c:"Colombia",lat:4.71,lon:-74.07},{n:"Amman",c:"Jordan",lat:31.95,lon:35.93},
   {n:"Tashkent",c:"Usbekistan",lat:41.3,lon:69.27},{n:"Kathmandu",c:"Nepal",lat:27.71,lon:85.32},
-  {n:"Naypyidaw",c:"Myanmar",lat:19.74,lon:96.12},{n:"Colombo",c:"Sri Lanka",lat:6.93,lon:79.86},
-  {n:"Khartoum",c:"Sudan",lat:15.55,lon:32.53},{n:"Lusaka",c:"Zambia",lat:-15.42,lon:28.28},
-  {n:"Harare",c:"Zimbabwe",lat:-17.83,lon:31.05},{n:"Bamako",c:"Mali",lat:12.65,lon:-8.0},
-  {n:"Dakar",c:"Senegal",lat:14.72,lon:-17.47},{n:"Tunis",c:"Tunisia",lat:36.82,lon:10.17},
-  {n:"Tripoli",c:"Libya",lat:32.9,lon:13.18},{n:"Caracas",c:"Venezuela",lat:10.49,lon:-66.88},
+  {n:"Khartoum",c:"Sudan",lat:15.55,lon:32.53},{n:"Dakar",c:"Senegal",lat:14.72,lon:-17.47},
+  {n:"Caracas",c:"Venezuela",lat:10.49,lon:-66.88},{n:"Colombo",c:"Sri Lanka",lat:6.93,lon:79.86},
 ];
 
 // ── Math ───────────────────────────────────────────────────
 function toRad(d){return d*Math.PI/180}
 function toDeg(r){return r*180/Math.PI}
 
-// Bearing from (fromLat,fromLon) to (toLat,toLon) — 0°=N, clockwise
-function bearingBetween(fromLat, fromLon, toLat, toLon) {
-  const la1=toRad(fromLat), la2=toRad(toLat);
-  const dL=toRad(toLon-fromLon);
+function bearingBetween(fromLat,fromLon,toLat,toLon){
+  const la1=toRad(fromLat),la2=toRad(toLat),dL=toRad(toLon-fromLon);
   const y=Math.sin(dL)*Math.cos(la2);
   const x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dL);
-  return (toDeg(Math.atan2(y,x))+360)%360;
+  return(toDeg(Math.atan2(y,x))+360)%360;
 }
 
-// Great-circle distance in km
-function distanceKm(la1,lo1,la2,lo2){
-  const R=6371;
-  const dLat=toRad(la2-la1), dLon=toRad(lo2-lo1);
+function distKm(la1,lo1,la2,lo2){
+  const R=6371,dLat=toRad(la2-la1),dLon=toRad(lo2-lo1);
   const a=Math.sin(dLat/2)**2+Math.cos(toRad(la1))*Math.cos(toRad(la2))*Math.sin(dLon/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
@@ -285,167 +256,152 @@ function distanceKm(la1,lo1,la2,lo2){
 function angleDiff(a,b){let d=Math.abs(a-b)%360;return d>180?360-d:d}
 function scoreFromDiff(d){return Math.max(0,Math.round(100*(1-d/180)))}
 
-function dirLabel(deg) {
-  const dirs=['N','NNØ','NØ','ØNØ','Ø','ØSØ','SØ','SSØ','S','SSV','SV','VSV','V','VNV','NV','NNV'];
-  return dirs[Math.round(deg/22.5)%16];
+function dirLabel(deg){
+  const d=['N','NNØ','NØ','ØNØ','Ø','ØSØ','SØ','SSØ','S','SSV','SV','VSV','V','VNV','NV','NNV'];
+  return d[Math.round(deg/22.5)%16];
 }
 function scoreColor(s){return s>=90?'#00e5b4':s>=70?'#9fdd5b':s>=50?'#ffbe0b':'#ff4d6d'}
 function scoreEmoji(s){return s>=95?'🎯':s>=80?'🌟':s>=60?'👍':s>=40?'😅':'🙈'}
 
-// ── GPS / Location ─────────────────────────────────────────
-function startGPS() {
-  if (!navigator.geolocation) {
-    setLocationError('GPS ikke støttet av denne nettleseren');
-    return;
-  }
-
+// ── GPS ───────────────────────────────────────────────────
+function startGPS(){
+  if(!navigator.geolocation){setLocErr('GPS ikke støttet');return}
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      userLat = pos.coords.latitude;
-      userLon = pos.coords.longitude;
-      // Try reverse geocoding with free nominatim API
-      reverseGeocode(userLat, userLon);
-      updateLocationBar();
-      enableStartButton();
+    pos=>{
+      userLat=pos.coords.latitude; userLon=pos.coords.longitude;
+      document.getElementById('locDot').className='loc-dot ok';
+      document.getElementById('locText').innerHTML=`📍 ${userLat.toFixed(3)}°N, ${userLon.toFixed(3)}°Ø — identifiserer sted…`;
+      enableBtn();
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&zoom=10`)
+        .then(r=>r.json()).then(d=>{
+          const a=d.address||{};
+          userPlace=a.city||a.town||a.village||a.county||a.country||null;
+          document.getElementById('locText').innerHTML=
+            `📍 <strong>${userPlace||'Ukjent sted'}</strong> &nbsp;(${userLat.toFixed(3)}°, ${userLon.toFixed(3)}°)`;
+        }).catch(()=>{
+          userPlace=null;
+          document.getElementById('locText').innerHTML=
+            `📍 <strong>${userLat.toFixed(3)}°N, ${userLon.toFixed(3)}°Ø</strong>`;
+        });
     },
-    err => {
-      let msg;
-      if (err.code === 1) msg = 'GPS-tillatelse avslått — bruker Bergen som standard';
-      else if (err.code === 2) msg = 'Kunne ikke finne posisjon — bruker Bergen som standard';
-      else msg = 'GPS-feil — bruker Bergen som standard';
-      // Fall back to Bergen
-      userLat = 60.39; userLon = 5.32; userPlaceName = 'Bergen (standard)';
-      setLocationFallback(msg);
-      enableStartButton();
+    err=>{
+      userLat=60.39; userLon=5.32; userPlace='Bergen (standard)';
+      setLocErr('Kunne ikke hente GPS — bruker Bergen som standard');
+      enableBtn();
     },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    {enableHighAccuracy:true,timeout:10000,maximumAge:60000}
   );
 }
 
-function reverseGeocode(lat, lon) {
-  fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`)
-    .then(r => r.json())
-    .then(data => {
-      const addr = data.address || {};
-      userPlaceName = addr.city || addr.town || addr.village || addr.county || addr.country || 'Ukjent sted';
-      updateLocationBar();
-    })
-    .catch(() => {
-      userPlaceName = `${userLat.toFixed(2)}°N, ${userLon.toFixed(2)}°Ø`;
-      updateLocationBar();
-    });
+function setLocErr(msg){
+  document.getElementById('locDot').className='loc-dot err';
+  document.getElementById('locText').textContent=msg;
 }
-
-function updateLocationBar() {
-  const dot = document.getElementById('locDot');
-  const txt = document.getElementById('locText');
-  dot.className = 'location-dot';
-  dot.style.cssText = '';
-  if (userPlaceName) {
-    txt.innerHTML = `📍 <strong>${userPlaceName}</strong> (${userLat.toFixed(2)}°, ${userLon.toFixed(2)}°)`;
-  } else {
-    txt.innerHTML = `📍 Posisjon funnet — identifiserer sted…`;
-  }
-}
-
-function setLocationError(msg) {
-  document.getElementById('locDot').className = 'location-dot error';
-  document.getElementById('locText').textContent = msg;
-}
-
-function setLocationFallback(msg) {
-  document.getElementById('locDot').className = 'location-dot error';
-  document.getElementById('locText').innerHTML = `⚠️ ${msg}`;
-}
-
-function enableStartButton() {
-  const btn = document.getElementById('mainBtn');
-  btn.disabled = false;
-  btn.textContent = 'Start spill';
+function enableBtn(){
+  const b=document.getElementById('mainBtn');
+  b.disabled=false; b.textContent='Start spill';
 }
 
 // ── Compass ───────────────────────────────────────────────
-function applyHeading(h, src) {
-  if (h===null||isNaN(h)) return;
-  currentHeading=(h+360)%360;
-  headingSource=src;
-  if (phase==='aiming') {
+/*
+  HEADING CONVENTION:
+  heading = degrees clockwise from true north that the TOP of the phone faces.
+  So if phone top points East, heading = 90.
+
+  Android deviceorientationabsolute:
+    alpha = degrees the device has rotated CCW around Z (vertical) axis from north.
+    When phone top points north: alpha=0
+    When phone top points east: alpha=270 (rotated 90 CCW from north... wait)
+    Actually: alpha increases CCW when viewed from above.
+    heading = (360 - alpha) % 360
+
+  iOS webkitCompassHeading:
+    Already gives clockwise-from-north heading directly. No conversion needed.
+
+  We rotate the compass dial by -heading so the red N needle always
+  points toward true north on screen.
+*/
+function setHeading(h){
+  currentHeading = (h+360)%360;
+  if(phase==='aiming'){
     document.getElementById('compassDial').style.transform=`rotate(${-currentHeading}deg)`;
     document.getElementById('headingVal').textContent=Math.round(currentHeading)+'°';
     document.getElementById('headingDir').textContent=dirLabel(currentHeading);
-    if(debugOn) document.getElementById('debugBar').textContent=`hdg:${currentHeading.toFixed(1)}° src:${src} lat:${userLat?.toFixed(3)} lon:${userLon?.toFixed(3)}`;
+  }
+  if(debugOn){
+    document.getElementById('debugBar').textContent=
+      `hdg:${currentHeading.toFixed(1)}° | pos:${userLat?.toFixed(3)},${userLon?.toFixed(3)}`;
   }
 }
 
-let gotAbsoluteEvt = false;
-function onAbsolute(e) {
+function onAbsolute(e){
   if(e.alpha===null) return;
-  gotAbsoluteEvt=true;
-  applyHeading((360-e.alpha+360)%360,'abs');
+  gotAbsoluteEvent=true;
+  // alpha increases counter-clockwise → convert to clockwise compass heading
+  setHeading((360-e.alpha)%360);
 }
-function onOrientation(e) {
-  if(gotAbsoluteEvt) return;
+
+function onOrientation(e){
+  if(gotAbsoluteEvent) return; // prefer absolute
   if(e.alpha===null) return;
-  if(typeof e.webkitCompassHeading==='number'&&e.webkitCompassHeading>=0){
-    applyHeading(e.webkitCompassHeading,'ios');
+  if(typeof e.webkitCompassHeading==='number' && e.webkitCompassHeading>=0){
+    // iOS: already clockwise from north
+    setHeading(e.webkitCompassHeading);
   } else {
-    applyHeading((360-e.alpha+360)%360,'rel');
+    // Android fallback (relative, not absolute north)
+    setHeading((360-e.alpha)%360);
   }
 }
 
-async function startCompass() {
+async function startCompass(){
   if(compassStarted) return;
   compassStarted=true;
-  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+  if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
     try{
-      const res=await DeviceOrientationEvent.requestPermission();
-      if(res!=='granted'){showNotice('⚠️ Kompasstillatelse avslått.');return}
-    }catch(e){showNotice('⚠️ Kompasfeil: '+e.message);return}
+      const r=await DeviceOrientationEvent.requestPermission();
+      if(r!=='granted'){showNotice('⚠️ Kompasstillatelse avslått.');return}
+    }catch(e){showNotice('⚠️ Kompassfeil: '+e.message);return}
   }
   window.addEventListener('deviceorientationabsolute',onAbsolute,true);
   window.addEventListener('deviceorientation',onOrientation,true);
   setTimeout(()=>{
-    if(headingSource==='none') showNotice('⚠️ Kompasset svarer ikke. Prøv å åpne appen i Chrome og gi tilgang til bevegelsessensorer.');
-  },2000);
+    if(!gotAbsoluteEvent && currentHeading===0)
+      showNotice('⚠️ Kompasset svarer ikke. Åpne appen i Chrome og gi tilgang til sensorer.');
+  },2500);
 }
 
 // ── UI ────────────────────────────────────────────────────
-function showNotice(msg){const el=document.getElementById('notice');el.textContent=msg;el.style.display='block'}
+function showNotice(m){const el=document.getElementById('notice');el.textContent=m;el.style.display='block'}
 function hideNotice(){document.getElementById('notice').style.display='none'}
 function updateStats(){
   document.getElementById('statR').textContent=rounds;
-  if(!scores.length){document.getElementById('statA').textContent='—';document.getElementById('statB').textContent='—';}
+  if(!scores.length){document.getElementById('statA').textContent='—';document.getElementById('statB').textContent='—'}
   else{
-    document.getElementById('statA').textContent=Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)+'%';
+    document.getElementById('statA').textContent=Math.round(scores.reduce((a,b)=>a+b)/scores.length)+'%';
     document.getElementById('statB').textContent=Math.max(...scores)+'%';
   }
 }
 
-// ── Game flow ─────────────────────────────────────────────
-async function startGame(){
-  await startCompass();
-  nextCity();
-}
+// ── Game ──────────────────────────────────────────────────
+async function startGame(){await startCompass();nextCity()}
 
 function nextCity(){
   let idx;
   do{idx=Math.floor(Math.random()*CAPITALS.length)}while(idx===lastIdx&&CAPITALS.length>1);
-  lastIdx=idx;
-  currentCapital=CAPITALS[idx];
-  phase='aiming';
+  lastIdx=idx; currentCapital=CAPITALS[idx]; phase='aiming';
 
   document.getElementById('idleScreen').style.display='none';
   document.getElementById('aimScreen').style.display='flex';
   document.getElementById('resultPanel').style.display='none';
   const tw=document.getElementById('targetWrap');
-  tw.classList.remove('visible');
-  tw.style.transform='';
+  tw.classList.remove('visible'); tw.style.transform='';
   hideNotice();
 
+  // Snap dial without animation
   const dial=document.getElementById('compassDial');
   dial.style.transition='none';
   dial.style.transform=`rotate(${-currentHeading}deg)`;
-  requestAnimationFrame(()=>{dial.style.transition='transform 0.12s ease-out'});
+  requestAnimationFrame(()=>{dial.style.transition='transform 0.1s ease-out'});
 
   document.getElementById('headingVal').textContent=Math.round(currentHeading)+'°';
   document.getElementById('headingDir').textContent=dirLabel(currentHeading);
@@ -453,39 +409,38 @@ function nextCity(){
   document.getElementById('phasePill').className='phase-pill';
   document.getElementById('capitalName').textContent=currentCapital.n;
   document.getElementById('capitalCountry').textContent=currentCapital.c;
-
-  // Show distance
-  const dist=distanceKm(userLat,userLon,currentCapital.lat,currentCapital.lon);
+  const dist=distKm(userLat,userLon,currentCapital.lat,currentCapital.lon);
   document.getElementById('capitalDist').textContent=Math.round(dist).toLocaleString('no')+' km unna';
-
   document.getElementById('mainBtn').textContent='📍 Lås inn retning';
   document.getElementById('mainBtn').disabled=false;
-  if(debugOn)document.getElementById('debugBar').style.display='block';
+  if(debugOn) document.getElementById('debugBar').style.display='block';
 }
 
 function lockHeading(){
   if(phase!=='aiming') return;
   phase='result';
 
-  const locked=Math.round(currentHeading);
+  const locked = Math.round(currentHeading);
 
-  // ← THIS IS THE KEY FIX: use actual user GPS coordinates, not hardcoded
-  const correct=Math.round(bearingBetween(userLat, userLon, currentCapital.lat, currentCapital.lon));
-  const diff=Math.round(angleDiff(locked,correct));
-  const score=scoreFromDiff(diff);
-  rounds++;scores.push(score);updateStats();
+  // Calculate correct bearing from user's actual GPS position
+  const correct = Math.round(bearingBetween(userLat, userLon, currentCapital.lat, currentCapital.lon));
+  const diff = Math.round(angleDiff(locked, correct));
+  const score = scoreFromDiff(diff);
+  rounds++; scores.push(score); updateStats();
 
-  // Freeze dial at locked
+  // Freeze dial at locked position
   const dial=document.getElementById('compassDial');
   dial.style.transition='none';
   dial.style.transform=`rotate(${-locked}deg)`;
 
-  // Show correct bearing arrow
-  // Dial rotated -locked; child at CSS rotate(X) appears on screen at (X-locked).
-  // We want screen angle = correct → X = correct + locked
+  // ── TARGET ARROW ──────────────────────────────────────────
+  // target-wrap is a direct child of .compass-ring (same as compass-dial).
+  // It is NOT inside compass-dial, so it is NOT affected by dial's rotation.
+  // rotate(correct) = correct degrees clockwise from 12-o'clock = points to correct bearing.
+  // This is completely independent of where the needle/dial ended up.
   const tw=document.getElementById('targetWrap');
   tw.style.transition='none';
-  tw.style.transform=`rotate(${correct+locked}deg)`;
+  tw.style.transform=`rotate(${correct}deg)`;
   requestAnimationFrame(()=>{
     tw.classList.add('visible');
     tw.style.transition='transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
@@ -496,10 +451,10 @@ function lockHeading(){
   document.getElementById('resCorrect').textContent=correct+'° ('+dirLabel(correct)+')';
   document.getElementById('resYours').textContent=locked+'° ('+dirLabel(locked)+')';
   document.getElementById('resDiff').textContent=diff+'° avvik';
-  document.getElementById('resFromPos').textContent=userPlaceName||`${userLat.toFixed(2)}°, ${userLon.toFixed(2)}°`;
+  document.getElementById('resFromPos').textContent=userPlace||(userLat.toFixed(2)+'°, '+userLon.toFixed(2)+'°');
 
   const sn=document.getElementById('scoreNum');
-  sn.textContent=score+'%';sn.style.color=scoreColor(score);
+  sn.textContent=score+'%'; sn.style.color=scoreColor(score);
   document.getElementById('scoreEmoji').textContent=scoreEmoji(score);
   document.getElementById('resultPanel').style.display='block';
   document.getElementById('mainBtn').textContent='➡ Neste by';
@@ -511,19 +466,18 @@ function onMainBtn(){
   else if(phase==='result') nextCity();
 }
 
-// Debug (tap logo 5×)
+// Debug: tap logo 5×
 document.getElementById('logoBtn').addEventListener('click',()=>{
-  debugTaps++;
-  if(debugTaps>=5){debugTaps=0;debugOn=!debugOn;document.getElementById('debugBar').style.display=debugOn&&phase==='aiming'?'block':'none';}
+  if(++debugTaps>=5){
+    debugTaps=0; debugOn=!debugOn;
+    document.getElementById('debugBar').style.display=debugOn&&phase==='aiming'?'block':'none';
+  }
 });
 
-// Init
 updateStats();
-startGPS();  // Start GPS immediately on load
-
-if('serviceWorker' in navigator){
+startGPS();
+if('serviceWorker' in navigator)
   window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-}
 </script>
 </body>
 </html>

@@ -73,8 +73,8 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 /* rotate(N deg) means N degrees clockwise from 12-o'clock = north */
 .target-wrap{position:absolute;inset:0;display:none;z-index:2}
 .target-wrap.visible{display:block}
-.target-line{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:3px;height:88px;background:linear-gradient(to bottom,var(--accent),transparent);border-radius:2px}
-.target-tip{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:12px solid var(--accent)}
+.target-line{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:3px;height:88px;background:linear-gradient(to top,var(--accent),transparent);border-radius:2px}
+.target-tip{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:12px solid var(--accent)}
 .heading-display{display:flex;align-items:center;gap:1rem}
 .heading-val{font-family:'Space Mono',monospace;font-size:28px;color:var(--text);min-width:70px;text-align:center}
 .heading-dir{font-size:13px;color:var(--muted);min-width:40px}

@@ -45,9 +45,6 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .capital-country{font-size:13px;color:var(--muted);margin-top:4px}
 .capital-dist{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Space Mono',monospace}
 .compass-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:.75rem}
-/* The compass SVG */
-.compass-svg{display:block;overflow:visible}
-/* Heading readout */
 .heading-row{display:flex;align-items:baseline;gap:.5rem}
 .heading-val{font-family:'Space Mono',monospace;font-size:32px;color:var(--text)}
 .heading-dir{font-size:14px;color:var(--muted)}
@@ -74,7 +71,7 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 
   <div class="header">
     <div class="logo">Kompass<span>jakt</span></div>
-    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)">v7.0</div>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)">v8</div>
   </div>
 
   <div class="location-bar">
@@ -88,13 +85,15 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
     <div class="stat"><div class="stat-num" id="statB">—</div><div class="stat-lbl">Beste</div></div>
   </div>
 
+  <!-- IDLE -->
   <div class="idle-screen" id="idleScreen">
     <div class="idle-icon">🧭</div>
     <div class="idle-title">Kompassjakt</div>
-    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg mot den og sikt inn med kompasset — grader vises i sanntid.</div>
+    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg mot den og lås inn retningen.</div>
   </div>
 
-  <div id="aimScreen" style="display:none;width:100%;flex-direction:column;align-items:center;gap:.9rem">
+  <!-- GAME -->
+  <div id="gameScreen" style="display:none;width:100%;flex-direction:column;align-items:center;gap:.9rem">
     <div class="capital-card">
       <div class="phase-pill" id="phasePill">Sikt inn</div>
       <div class="capital-name" id="capitalName">—</div>
@@ -104,102 +103,116 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 
     <div class="compass-section">
       <!--
-        SVG COMPASS — 240×240, center = (120,120)
+        SVG kompass 260x260, senter (130,130).
 
-        LAYER 1: compassDial — roterer med -heading
-          Rød nål peker fra (120,120) mot (120,20) = MOT TOPPEN = nord
-          Når dial roterer med -heading, peker rød nål alltid mot nord på skjermen.
-          Grå nål peker ned (sør).
+        NØKKELREGEL:
+        - En SVG-gruppe med rotate(A, cx, cy) roterer ALLE punkter i gruppen
+          rundt sentrum (cx,cy) med A grader MEDURS.
+        - En pil som peker MOT TOPPEN av SVG-en (nord) ved rotate(0)
+          vil peke mot 90° (øst) ved rotate(90), 180° (sør) ved rotate(180), osv.
 
-        LAYER 2: targetArrow — roterer med correctBearing
-          Grønn pil peker fra (120,120) mot (120,20) = MOT TOPPEN = nord ved 0°
-          Ved correctBearing=258: peker mot VSV ✓
-          UAVHENGIG av compassDial — roterer i sin egen koordinatrom.
+        RØDNÅL (compassNeedle):
+          - Nåla er tegnet med rød spiss opp (mot y=20 = nord)
+          - Vi vil at rød spiss ALLTID skal peke mot nord på skjermen
+          - Når telefonen peker mot øst, heading=90°
+          - Vi roterer nåla med -90° → den peker tilbake mot nord ✓
+          - Formel: rotate(-heading, 130, 130)
 
-        Begge lag har transform-origin="120 120" (sentrum).
-        transform-origin er satt som SVG-attributt — fungerer alltid korrekt,
-        ingen CSS transform-origin quirks.
+        GRØNN PIL (targetNeedle, vises kun etter lås):
+          - Pil tegnet med grønn spiss opp (mot y=20 = nord) ved rotate(0)
+          - Vi vil at grønn spiss skal peke mot correctBearing° fra nord
+          - Formel: rotate(correctBearing, 130, 130)
+          - Eksempel: correctBearing=231 → pil peker mot SV ✓
+
+        De to er UAVHENGIGE SVG-grupper med identisk geometri men ulik rotasjon.
+        Ingen av dem påvirker hverandre.
+
+        VIKTIG: setHeading() oppdaterer KUN compassNeedle.
+        targetNeedle settes EN gang i lockHeading() og røres ALDRI igjen.
       -->
-      <svg class="compass-svg" width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
+      <svg id="compassSvg" width="260" height="260" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
 
-        <!-- Background ring -->
-        <circle cx="120" cy="120" r="118" fill="#111827" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <!-- Bakgrunn -->
+        <circle cx="130" cy="130" r="128" fill="#111827" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
 
-        <!-- Tick marks (fixed, not rotating) -->
+        <!-- Gradtikker (faste, roterer ikke) -->
         <g id="ticks">
-          <!-- Major ticks every 45° -->
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(0   120 120)"/>
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(45  120 120)"/>
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(90  120 120)"/>
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(135 120 120)"/>
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(180 120 120)"/>
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(225 120 120)"/>
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(270 120 120)"/>
-          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(315 120 120)"/>
-          <!-- Minor ticks every 15° -->
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(15  120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(30  120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(60  120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(75  120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(105 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(120 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(150 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(165 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(195 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(210 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(240 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(255 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(285 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(300 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(330 120 120)"/>
-          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(345 120 120)"/>
+          <!-- Hvert 10° -->
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(10  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(20  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(30  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(40  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(50  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(60  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(70  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(80  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(90  130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(100 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(110 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(120 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(130 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(140 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(150 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(160 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(170 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(180 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(190 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(200 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(210 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(220 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(230 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(240 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(250 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(260 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(270 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(280 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(290 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(300 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(310 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(320 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(330 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(340 130 130)"/>
+          <line x1="130" y1="6"  x2="130" y2="18" stroke="rgba(255,255,255,0.2)" stroke-width="1" transform="rotate(350 130 130)"/>
+          <!-- Nord tick (stor, rød) -->
+          <line x1="130" y1="4"  x2="130" y2="26" stroke="#ff4d6d" stroke-width="3"/>
         </g>
 
-        <!-- Fixed cardinal labels -->
-        <text x="120" y="36" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="14" font-weight="700" fill="#ff4d6d">N</text>
-        <text x="120" y="208" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="12" fill="#6b7a99">S</text>
-        <text x="208" y="120" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="12" fill="#6b7a99">Ø</text>
-        <text x="32"  y="120" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="12" fill="#6b7a99">V</text>
+        <!-- Kardinalpunkter (faste) -->
+        <text x="130" y="40" text-anchor="middle" font-family="Space Mono" font-size="15" font-weight="700" fill="#ff4d6d">N</text>
+        <text x="130" y="224" text-anchor="middle" font-family="Space Mono" font-size="13" fill="#6b7a99">S</text>
+        <text x="222" y="135" text-anchor="middle" font-family="Space Mono" font-size="13" fill="#6b7a99">Ø</text>
+        <text x="38"  y="135" text-anchor="middle" font-family="Space Mono" font-size="13" fill="#6b7a99">V</text>
 
         <!--
-          LAYER 1: Compass dial (rotates with phone)
-          transform-origin="120 120" ensures rotation around compass center.
-          Red tip points UP (toward y=20), which = north when dial is at 0°.
-          We rotate dial by -heading so red tip always points north on screen.
+          KOMPASSNÅL (rød) — oppdateres kontinuerlig av setHeading()
+          Rød spiss: fra senter (130,130) mot topp (130,22) — peker nord ved rotate(0)
+          Grå hale: fra senter mot bunn (130,200)
+          rotate(-heading, 130, 130) → spiss peker alltid nord på skjermen
         -->
-        <g id="compassDial" transform="rotate(0 120 120)">
-          <!-- Red north needle: tip at (120,20), base at (120,120) -->
-          <polygon points="120,20 114,120 126,120" fill="#ff4d6d" opacity="0.9"/>
-          <!-- Gray south needle: tip at (120,220), base at (120,120) -->
-          <polygon points="120,220 114,120 126,120" fill="#6b7a99" opacity="0.6"/>
+        <g id="compassNeedle" transform="rotate(0,130,130)">
+          <!-- Rød nord-spiss -->
+          <polygon points="130,22  122,130  138,130" fill="#ff4d6d"/>
+          <!-- Grå sør-hale -->
+          <polygon points="130,200 122,130  138,130" fill="#6b7a99" opacity="0.7"/>
         </g>
 
-        <!-- Center cap -->
-        <circle cx="120" cy="120" r="10" fill="#1a2235" stroke="#00e5b4" stroke-width="2"/>
-        <circle cx="120" cy="120" r="4" fill="#00e5b4"/>
+        <!-- Sentrum -->
+        <circle cx="130" cy="130" r="11" fill="#1a2235" stroke="#00e5b4" stroke-width="2.5"/>
+        <circle cx="130" cy="130" r="4"  fill="#00e5b4"/>
 
         <!--
-          LAYER 2: Target arrow (shown after lock, independent of dial)
-          transform-origin="120 120" — rotates around compass center.
-          Green tip points UP (toward y=30), which = north when at 0°.
-          rotate(correctBearing 120 120) makes tip point to correctBearing degrees from north.
-          This is 100% independent of compassDial rotation.
+          GRØNN PIL (riktig retning) — vises KUN etter lås, settes EN gang
+          Spiss: fra senter (130,130) mot topp (130,22) — peker nord ved rotate(0)
+          rotate(correctBearing, 130, 130) → spiss peker mot correctBearing° fra nord
+          ALDRI rørt av setHeading() — fullstendig uavhengig av compassNeedle
         -->
-        <g id="targetArrow" transform="rotate(0 120 120)" display="none" filter="url(#glow)">
-          <!-- Arrow line from center toward tip -->
-          <line x1="120" y1="120" x2="120" y2="32" stroke="#00e5b4" stroke-width="3" stroke-linecap="round"/>
-          <!-- Arrowhead at tip (y=32 = top) -->
-          <polygon points="120,18 112,36 128,36" fill="#00e5b4"/>
+        <g id="targetNeedle" transform="rotate(0,130,130)" display="none">
+          <line x1="130" y1="130" x2="130" y2="28" stroke="#00e5b4" stroke-width="3.5" stroke-linecap="round"/>
+          <polygon points="130,18  121,38  139,38" fill="#00e5b4"/>
         </g>
+
       </svg>
 
-      <!-- Heading readout -->
       <div class="heading-row">
         <div class="heading-val" id="headingVal">—°</div>
         <div class="heading-dir" id="headingDir">—</div>
@@ -207,6 +220,7 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
     </div>
   </div>
 
+  <!-- RESULTAT -->
   <div id="resultPanel" class="result-panel" style="display:none">
     <div class="score-display">
       <div class="score-num" id="scoreNum">—</div>
@@ -224,20 +238,31 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
   <div class="btn-row">
     <button class="btn btn-main" id="mainBtn" onclick="onMainBtn()" disabled>Henter posisjon…</button>
   </div>
-
 </div>
+
 <script>
-// ── State ─────────────────────────────────────────────────
-let phase = 'idle';
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let phase = 'idle';       // 'idle' | 'aiming' | 'result'
 let currentCapital = null;
-let currentHeading = 0;
+let liveHeading = 0;      // kontinuerlig oppdatert av sensor
+let lockedHeading = null; // satt én gang i lockHeading(), aldri endret
 let compassStarted = false;
-let gotAbsoluteEvent = false;
+let gotAbsolute = false;
 let lastIdx = -1;
 let rounds = 0, scores = [];
 let userLat = null, userLon = null, userPlace = null;
 
-// ── Capitals ───────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  SVG-elementer
+// ════════════════════════════════════════════════════════
+const compassNeedle = document.getElementById('compassNeedle');
+const targetNeedle  = document.getElementById('targetNeedle');
+
+// ════════════════════════════════════════════════════════
+//  KAPITALER
+// ════════════════════════════════════════════════════════
 const CAPITALS = [
   {n:"Tokyo",c:"Japan",lat:35.68,lon:139.69},{n:"Delhi",c:"India",lat:28.61,lon:77.21},
   {n:"Kairo",c:"Egypt",lat:30.04,lon:31.24},{n:"London",c:"Storbritannia",lat:51.51,lon:-0.13},
@@ -277,10 +302,14 @@ const CAPITALS = [
   {n:"Caracas",c:"Venezuela",lat:10.49,lon:-66.88},{n:"Colombo",c:"Sri Lanka",lat:6.93,lon:79.86},
 ];
 
-// ── Math ───────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  MATEMATIKK
+// ════════════════════════════════════════════════════════
 function toRad(d){return d*Math.PI/180}
 function toDeg(r){return r*180/Math.PI}
 
+// Bearing fra (fromLat,fromLon) til (toLat,toLon)
+// Returnerer 0–360°, 0=nord, 90=øst, 180=sør, 270=vest
 function bearingBetween(fromLat,fromLon,toLat,toLon){
   const la1=toRad(fromLat),la2=toRad(toLat),dL=toRad(toLon-fromLon);
   const y=Math.sin(dL)*Math.cos(la2);
@@ -304,80 +333,85 @@ function dirLabel(deg){
 function scoreColor(s){return s>=90?'#00e5b4':s>=70?'#9fdd5b':s>=50?'#ffbe0b':'#ff4d6d'}
 function scoreEmoji(s){return s>=95?'🎯':s>=80?'🌟':s>=60?'👍':s>=40?'😅':'🙈'}
 
-// ── GPS ───────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  GPS
+// ════════════════════════════════════════════════════════
 function startGPS(){
   if(!navigator.geolocation){setLocErr('GPS ikke støttet');return}
-  navigator.geolocation.getCurrentPosition(
-    pos=>{
-      userLat=pos.coords.latitude; userLon=pos.coords.longitude;
-      document.getElementById('locDot').className='loc-dot ok';
-      document.getElementById('locText').innerHTML=
-        `📍 ${userLat.toFixed(3)}°, ${userLon.toFixed(3)}° — identifiserer sted…`;
-      enableBtn();
-      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&zoom=10`)
-        .then(r=>r.json()).then(d=>{
-          const a=d.address||{};
-          userPlace=a.city||a.town||a.village||a.county||a.country||null;
-          document.getElementById('locText').innerHTML=
-            `📍 <strong>${userPlace||'Ukjent sted'}</strong> &nbsp;(${userLat.toFixed(3)}°, ${userLon.toFixed(3)}°)`;
-        }).catch(()=>{userPlace=null});
-    },
-    ()=>{
-      userLat=60.39; userLon=5.32; userPlace='Bergen (standard)';
-      setLocErr('Kunne ikke hente GPS — bruker Bergen som standard');
-      enableBtn();
-    },
-    {enableHighAccuracy:true,timeout:10000,maximumAge:60000}
-  );
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userLat=pos.coords.latitude;
+    userLon=pos.coords.longitude;
+    document.getElementById('locDot').className='loc-dot ok';
+    document.getElementById('locText').innerHTML=
+      `📍 ${userLat.toFixed(3)}°, ${userLon.toFixed(3)}° — identifiserer…`;
+    enableBtn();
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&zoom=10`)
+      .then(r=>r.json()).then(d=>{
+        const a=d.address||{};
+        userPlace=a.city||a.town||a.village||a.county||a.country||null;
+        document.getElementById('locText').innerHTML=
+          `📍 <strong>${userPlace||'Ukjent'}</strong> (${userLat.toFixed(3)}°, ${userLon.toFixed(3)}°)`;
+      }).catch(()=>{userPlace=null});
+  },()=>{
+    userLat=60.39;userLon=5.32;userPlace='Bergen (standard)';
+    setLocErr('GPS feilet — bruker Bergen som standard');
+    enableBtn();
+  },{enableHighAccuracy:true,timeout:10000,maximumAge:60000});
 }
+
 function setLocErr(m){
   document.getElementById('locDot').className='loc-dot err';
   document.getElementById('locText').textContent=m;
 }
 function enableBtn(){
   const b=document.getElementById('mainBtn');
-  b.disabled=false; b.textContent='Start spill';
+  b.disabled=false;b.textContent='Start spill';
 }
 
-// ── Compass ───────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  KOMPASS
+// ════════════════════════════════════════════════════════
 /*
-  heading = grader med klokka fra nord som telefonens topp peker.
-  0° = topp peker nord, 90° = topp peker øst, 180° = topp peker sør.
+  heading = grader MED KLOKKA fra NORD som TOPPEN AV TELEFONEN peker.
+  0° = nord, 90° = øst, 180° = sør, 270° = vest.
 
   Android deviceorientationabsolute:
-    alpha øker mot klokka sett ovenfra.
-    Topp peker nord → alpha=0 → heading=0 ✓
-    Topp peker øst  → alpha=270 → heading=(360-270)=90 ✓
-    heading = (360 - alpha) % 360
+    e.alpha = grader enheten har rotert MOT KLOKKA rundt vertikal akse.
+    Topp peker nord → alpha=0  → heading = (360-0)%360 = 0 ✓
+    Topp peker øst  → alpha=270→ heading = (360-270) = 90 ✓
+    Topp peker vest → alpha=90 → heading = (360-90) = 270 ✓
+    Formel: heading = (360 - alpha) % 360
 
   iOS webkitCompassHeading:
-    Gir allerede heading direkte (0=nord, CW). Ingen konvertering.
+    Allerede = heading direkte (0=nord, CW). Ingen konvertering.
 
-  compassDial roteres med SVG-attributt: rotate(-heading 120 120)
-  → rød nål peker alltid mot nord på skjermen.
+  setHeading() gjør KUN:
+    1. Oppdaterer liveHeading
+    2. Roterer compassNeedle: rotate(-heading, 130, 130)
+    3. Oppdaterer grader-tekst
+    4. Rører ALDRI targetNeedle
 */
-const dial = document.getElementById('compassDial');
-const targetArrow = document.getElementById('targetArrow');
-
 function setHeading(h){
-  currentHeading = (h+360)%360;
-  // Rotate the compass dial so red needle always points north
-  dial.setAttribute('transform', `rotate(${-currentHeading} 120 120)`);
+  liveHeading = (h+360)%360;
+
+  // Oppdater nål BARE under sikting, ikke etter lås
   if(phase==='aiming'){
-    document.getElementById('headingVal').textContent = Math.round(currentHeading)+'°';
-    document.getElementById('headingDir').textContent = dirLabel(currentHeading);
+    compassNeedle.setAttribute('transform',`rotate(${-liveHeading},130,130)`);
+    document.getElementById('headingVal').textContent=Math.round(liveHeading)+'°';
+    document.getElementById('headingDir').textContent=dirLabel(liveHeading);
   }
+  // I result-fasen: ingenting — nål og pil er frosset
 }
 
 function onAbsolute(e){
-  if(e.alpha===null) return;
-  gotAbsoluteEvent=true;
+  if(e.alpha===null)return;
+  gotAbsolute=true;
   setHeading((360-e.alpha)%360);
 }
 
 function onOrientation(e){
-  if(gotAbsoluteEvent) return;
-  if(e.alpha===null) return;
+  if(gotAbsolute)return;
+  if(e.alpha===null)return;
   if(typeof e.webkitCompassHeading==='number'&&e.webkitCompassHeading>=0){
     setHeading(e.webkitCompassHeading);
   } else {
@@ -386,7 +420,7 @@ function onOrientation(e){
 }
 
 async function startCompass(){
-  if(compassStarted) return;
+  if(compassStarted)return;
   compassStarted=true;
   if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
     try{
@@ -397,12 +431,14 @@ async function startCompass(){
   window.addEventListener('deviceorientationabsolute',onAbsolute,true);
   window.addEventListener('deviceorientation',onOrientation,true);
   setTimeout(()=>{
-    if(!gotAbsoluteEvent&&currentHeading===0)
-      showNotice('⚠️ Kompasset svarer ikke. Åpne i Chrome og gi tilgang til bevegelsessensorer.');
+    if(!gotAbsolute&&liveHeading===0)
+      showNotice('⚠️ Kompasset svarer ikke. Åpne i Chrome og gi tilgang til sensorer.');
   },2500);
 }
 
-// ── UI ────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+//  UI HJELPERE
+// ════════════════════════════════════════════════════════
 function showNotice(m){const el=document.getElementById('notice');el.textContent=m;el.style.display='block'}
 function hideNotice(){document.getElementById('notice').style.display='none'}
 function updateStats(){
@@ -410,32 +446,43 @@ function updateStats(){
   if(!scores.length){
     document.getElementById('statA').textContent='—';
     document.getElementById('statB').textContent='—';
-  } else {
+  }else{
     document.getElementById('statA').textContent=Math.round(scores.reduce((a,b)=>a+b)/scores.length)+'%';
     document.getElementById('statB').textContent=Math.max(...scores)+'%';
   }
 }
 
-// ── Game ──────────────────────────────────────────────────
-async function startGame(){await startCompass();nextCity()}
+// ════════════════════════════════════════════════════════
+//  SPILLFLYT
+// ════════════════════════════════════════════════════════
+async function startGame(){
+  await startCompass();
+  nextCity();
+}
 
 function nextCity(){
   let idx;
   do{idx=Math.floor(Math.random()*CAPITALS.length)}while(idx===lastIdx&&CAPITALS.length>1);
-  lastIdx=idx; currentCapital=CAPITALS[idx]; phase='aiming';
+  lastIdx=idx;
+  currentCapital=CAPITALS[idx];
+  lockedHeading=null;
+  phase='aiming';
 
+  // Gjemmer resultater, viser spill
   document.getElementById('idleScreen').style.display='none';
-  document.getElementById('aimScreen').style.display='flex';
+  document.getElementById('gameScreen').style.display='flex';
   document.getElementById('resultPanel').style.display='none';
-
-  // Hide target arrow
-  targetArrow.setAttribute('display','none');
-  // Reset dial to current heading immediately
-  dial.setAttribute('transform',`rotate(${-currentHeading} 120 120)`);
-
   hideNotice();
-  document.getElementById('headingVal').textContent=Math.round(currentHeading)+'°';
-  document.getElementById('headingDir').textContent=dirLabel(currentHeading);
+
+  // Gjemmer grønn pil
+  targetNeedle.setAttribute('display','none');
+
+  // Setter kompassnål til live heading (snapser, ingen animasjon)
+  compassNeedle.setAttribute('transform',`rotate(${-liveHeading},130,130)`);
+
+  // Oppdaterer UI
+  document.getElementById('headingVal').textContent=Math.round(liveHeading)+'°';
+  document.getElementById('headingDir').textContent=dirLabel(liveHeading);
   document.getElementById('phasePill').textContent='Sikt inn';
   document.getElementById('phasePill').className='phase-pill';
   document.getElementById('capitalName').textContent=currentCapital.n;
@@ -447,51 +494,61 @@ function nextCity(){
 }
 
 function lockHeading(){
-  if(phase!=='aiming') return;
+  if(phase!=='aiming')return;
+
+  // ── LÅS ──────────────────────────────────────────────
+  // 1. Fryser liveHeading som lockedHeading
+  lockedHeading = Math.round(liveHeading);
+
+  // 2. Setter phase til result FØR noe annet — setHeading() gjør ingenting lenger
   phase='result';
 
-  const locked = Math.round(currentHeading);
-
-  // Bearing from user's actual GPS position to capital
+  // 3. Beregner riktig retning fra GPS
   const correct = Math.round(bearingBetween(userLat,userLon,currentCapital.lat,currentCapital.lon));
-  const diff = Math.round(angleDiff(locked,correct));
-  const score = scoreFromDiff(diff);
-  rounds++; scores.push(score); updateStats();
 
-  // Freeze dial at locked position
-  dial.setAttribute('transform',`rotate(${-locked} 120 120)`);
-  // Stop compass updates visually (phase is now result)
+  // 4. Fryser kompassnåla ved lockedHeading (den er allerede der, men setter eksplisitt)
+  compassNeedle.setAttribute('transform',`rotate(${-lockedHeading},130,130)`);
 
-  // Show target arrow pointing to correct bearing
-  // rotate(correct 120 120): tip starts at top (north=0°), rotates clockwise to correct°
-  // This is in absolute screen space — no relationship to dial rotation whatsoever
-  targetArrow.setAttribute('transform',`rotate(${correct} 120 120)`);
-  targetArrow.setAttribute('display','block');
+  // 5. Viser grønn pil ved correct bearing — UAVHENGIG av nåla
+  //    rotate(correct, 130, 130): spiss peker mot toppen (nord) ved 0°,
+  //    og roterer correct° med klokka → peker mot correct° fra nord ✓
+  targetNeedle.setAttribute('transform',`rotate(${correct},130,130)`);
+  targetNeedle.setAttribute('display','block');
 
-  // Update heading display to show locked value
-  document.getElementById('headingVal').textContent=locked+'°';
-  document.getElementById('headingDir').textContent=dirLabel(locked);
+  // 6. Oppdaterer visning til lockedHeading (ikke live!)
+  document.getElementById('headingVal').textContent=lockedHeading+'°';
+  document.getElementById('headingDir').textContent=dirLabel(lockedHeading);
 
+  // ── SCORE ─────────────────────────────────────────────
+  const diff=Math.round(angleDiff(lockedHeading,correct));
+  const score=scoreFromDiff(diff);
+  rounds++;scores.push(score);updateStats();
+
+  // ── RESULTATPANEL ─────────────────────────────────────
   document.getElementById('phasePill').textContent='Resultat';
   document.getElementById('phasePill').className='phase-pill result';
   document.getElementById('resCorrect').textContent=correct+'° ('+dirLabel(correct)+')';
-  document.getElementById('resYours').textContent=locked+'° ('+dirLabel(locked)+')';
+  document.getElementById('resYours').textContent=lockedHeading+'° ('+dirLabel(lockedHeading)+')';
   document.getElementById('resDiff').textContent=diff+'° avvik';
   document.getElementById('resFromPos').textContent=userPlace||(userLat.toFixed(2)+'°, '+userLon.toFixed(2)+'°');
 
   const sn=document.getElementById('scoreNum');
-  sn.textContent=score+'%'; sn.style.color=scoreColor(score);
+  sn.textContent=score+'%';
+  sn.style.color=scoreColor(score);
   document.getElementById('scoreEmoji').textContent=scoreEmoji(score);
   document.getElementById('resultPanel').style.display='block';
   document.getElementById('mainBtn').textContent='➡ Neste by';
 }
 
 function onMainBtn(){
-  if(phase==='idle') startGame();
+  if(phase==='idle')       startGame();
   else if(phase==='aiming') lockHeading();
   else if(phase==='result') nextCity();
 }
 
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
 updateStats();
 startGPS();
 if('serviceWorker' in navigator)

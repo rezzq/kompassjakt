@@ -16,12 +16,11 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif}
 body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;padding:env(safe-area-inset-top,12px) 0 env(safe-area-inset-bottom,20px)}
-.stars{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1px 1px at 20% 15%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 75% 8%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 45% 30%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 90% 40%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 10% 60%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 60% 75%,rgba(255,255,255,.4) 0%,transparent 100%)}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1px 1px at 20% 15%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 75% 8%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 45% 30%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 90% 40%,rgba(255,255,255,.4) 0%,transparent 100%)}
 .app{position:relative;z-index:1;width:100%;max-width:440px;padding:1.25rem 1.25rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.9rem}
 .header{width:100%;display:flex;justify-content:space-between;align-items:center;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
 .logo{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;user-select:none}
 .logo span{color:var(--muted)}
-/* Location */
 .location-bar{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.6rem 1rem;display:flex;align-items:center;gap:.6rem;font-size:12px}
 .loc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .loc-dot.searching{background:var(--warn);animation:pulse 1.2s infinite}
@@ -30,17 +29,14 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
 .loc-text{color:var(--muted);flex:1;line-height:1.4}
 .loc-text strong{color:var(--text)}
-/* Stats */
 .stats{width:100%;display:flex;gap:8px}
 .stat{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:.6rem .5rem;text-align:center}
 .stat-num{font-family:'Space Mono',monospace;font-size:18px;color:var(--text)}
 .stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
-/* Idle */
 .idle-screen{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;padding:1.5rem 0}
 .idle-icon{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,180,.15),transparent 70%);border:1px solid rgba(0,229,180,.3);display:flex;align-items:center;justify-content:center;font-size:40px}
 .idle-title{font-size:26px;font-weight:800}
 .idle-desc{font-size:14px;color:var(--muted);line-height:1.6;max-width:280px}
-/* Capital card */
 .capital-card{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.25rem;text-align:center;position:relative;overflow:hidden}
 .capital-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
 .phase-pill{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-bottom:.6rem;background:rgba(0,229,180,.12);color:var(--accent);border:1px solid rgba(0,229,180,.25)}
@@ -48,37 +44,13 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .capital-name{font-size:28px;font-weight:800;color:var(--text);line-height:1.1}
 .capital-country{font-size:13px;color:var(--muted);margin-top:4px}
 .capital-dist{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Space Mono',monospace}
-/* Compass */
 .compass-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:.75rem}
-.compass-ring{width:220px;height:220px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);position:relative;box-shadow:inset 0 0 40px rgba(0,229,180,.04),0 0 40px rgba(0,0,0,.4)}
-.clabels{position:absolute;inset:0;pointer-events:none;z-index:4}
-.clabel{position:absolute;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;width:20px;height:20px}
-.clabel.n{top:10px;left:50%;transform:translateX(-50%);color:var(--danger)}
-.clabel.s{bottom:10px;left:50%;transform:translateX(-50%);color:var(--muted)}
-.clabel.e{right:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
-.clabel.w{left:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
-/*
-  COMPASS DESIGN:
-  - .compass-dial rotates by -heading so the N needle always points to true north on screen
-  - .target-wrap is a SIBLING of compass-dial (NOT inside it)
-    It lives in the same coordinate space as the ring (no parent rotation)
-    So target just needs rotate(correctBearing) directly — no offset needed
-*/
-.compass-dial{position:absolute;inset:0;will-change:transform;z-index:1}
-.needle-wrap{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
-.needle-n{width:8px;height:68px;background:linear-gradient(to bottom,var(--danger),rgba(255,77,109,.5));clip-path:polygon(50% 0%,100% 100%,0% 100%)}
-.needle-s{width:8px;height:58px;background:linear-gradient(to top,var(--muted),rgba(107,122,153,.3));clip-path:polygon(0% 0%,100% 0%,50% 100%)}
-.needle-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--bg3);border:2px solid var(--accent);z-index:3;box-shadow:0 0 12px rgba(0,229,180,.4)}
-/* target-wrap: absolute, same parent as compass-dial = compass-ring */
-/* rotate(N deg) means N degrees clockwise from 12-o'clock = north */
-.target-wrap{position:absolute;inset:0;display:none;z-index:2}
-.target-wrap.visible{display:block}
-.target-line{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:3px;height:88px;background:linear-gradient(to top,var(--accent),transparent);border-radius:2px}
-.target-tip{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:12px solid var(--accent)}
-.heading-display{display:flex;align-items:center;gap:1rem}
-.heading-val{font-family:'Space Mono',monospace;font-size:28px;color:var(--text);min-width:70px;text-align:center}
-.heading-dir{font-size:13px;color:var(--muted);min-width:40px}
-/* Result */
+/* The compass SVG */
+.compass-svg{display:block;overflow:visible}
+/* Heading readout */
+.heading-row{display:flex;align-items:baseline;gap:.5rem}
+.heading-val{font-family:'Space Mono',monospace;font-size:32px;color:var(--text)}
+.heading-dir{font-size:14px;color:var(--muted)}
 .result-panel{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1rem 1.25rem}
 .result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
 .result-row:last-child{border-bottom:none}
@@ -88,15 +60,12 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 .score-num{font-size:54px;font-weight:800;font-family:'Space Mono',monospace;line-height:1}
 .score-sub{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
 .score-emoji{font-size:26px;margin-top:6px}
-/* Buttons */
 .btn-row{width:100%;display:flex;gap:10px}
 .btn{flex:1;padding:1rem;border-radius:14px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-size:15px;font-weight:600;transition:transform .1s,opacity .1s;letter-spacing:.02em}
 .btn:active{transform:scale(.97);opacity:.85}
 .btn-main{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#000;flex:2}
 .btn-main:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .notice{width:100%;background:rgba(255,190,11,.1);border:1px solid rgba(255,190,11,.25);border-radius:12px;padding:.75rem 1rem;font-size:12px;color:var(--warn);line-height:1.6}
-/* Debug bar */
-.debug-bar{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.4rem .75rem;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);display:none;line-height:1.6}
 </style>
 </head>
 <body>
@@ -104,8 +73,8 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 <div class="app">
 
   <div class="header">
-    <div class="logo" id="logoBtn">Kompass<span>jakt</span></div>
-    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)">v4.0</div>
+    <div class="logo">Kompass<span>jakt</span></div>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted)">v7.0</div>
   </div>
 
   <div class="location-bar">
@@ -122,7 +91,7 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
   <div class="idle-screen" id="idleScreen">
     <div class="idle-icon">🧭</div>
     <div class="idle-title">Kompassjakt</div>
-    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg mot den og lås inn retningen — beregnet fra din faktiske posisjon.</div>
+    <div class="idle-desc">En tilfeldig hovedstad vises. Snu deg mot den og sikt inn med kompasset — grader vises i sanntid.</div>
   </div>
 
   <div id="aimScreen" style="display:none;width:100%;flex-direction:column;align-items:center;gap:.9rem">
@@ -134,35 +103,108 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
     </div>
 
     <div class="compass-section">
-      <div class="compass-ring">
-        <!-- Fixed labels always visible -->
-        <div class="clabels">
-          <span class="clabel n">N</span>
-          <span class="clabel s">S</span>
-          <span class="clabel e">Ø</span>
-          <span class="clabel w">V</span>
-        </div>
-        <!-- Rotating dial: spins opposite to phone heading so red N always points north -->
-        <div class="compass-dial" id="compassDial">
-          <div class="needle-wrap">
-            <div class="needle-n"></div>
-            <div class="needle-s"></div>
-          </div>
-        </div>
-        <!-- Target arrow: child of compass-ring, NOT of compass-dial.
-             rotate(correctBearing) points directly to the correct city. -->
-        <div class="target-wrap" id="targetWrap">
-          <div class="target-line"></div>
-          <div class="target-tip"></div>
-        </div>
-        <div class="needle-center"></div>
-      </div>
-      <div class="heading-display">
+      <!--
+        SVG COMPASS — 240×240, center = (120,120)
+
+        LAYER 1: compassDial — roterer med -heading
+          Rød nål peker fra (120,120) mot (120,20) = MOT TOPPEN = nord
+          Når dial roterer med -heading, peker rød nål alltid mot nord på skjermen.
+          Grå nål peker ned (sør).
+
+        LAYER 2: targetArrow — roterer med correctBearing
+          Grønn pil peker fra (120,120) mot (120,20) = MOT TOPPEN = nord ved 0°
+          Ved correctBearing=258: peker mot VSV ✓
+          UAVHENGIG av compassDial — roterer i sin egen koordinatrom.
+
+        Begge lag har transform-origin="120 120" (sentrum).
+        transform-origin er satt som SVG-attributt — fungerer alltid korrekt,
+        ingen CSS transform-origin quirks.
+      -->
+      <svg class="compass-svg" width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Background ring -->
+        <circle cx="120" cy="120" r="118" fill="#111827" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+        <!-- Tick marks (fixed, not rotating) -->
+        <g id="ticks">
+          <!-- Major ticks every 45° -->
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(0   120 120)"/>
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(45  120 120)"/>
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(90  120 120)"/>
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(135 120 120)"/>
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(180 120 120)"/>
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(225 120 120)"/>
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(270 120 120)"/>
+          <line x1="120" y1="8"  x2="120" y2="22" stroke="rgba(255,255,255,0.4)" stroke-width="2" transform="rotate(315 120 120)"/>
+          <!-- Minor ticks every 15° -->
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(15  120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(30  120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(60  120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(75  120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(105 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(120 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(150 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(165 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(195 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(210 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(240 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(255 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(285 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(300 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(330 120 120)"/>
+          <line x1="120" y1="8" x2="120" y2="16" stroke="rgba(255,255,255,0.15)" stroke-width="1" transform="rotate(345 120 120)"/>
+        </g>
+
+        <!-- Fixed cardinal labels -->
+        <text x="120" y="36" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="14" font-weight="700" fill="#ff4d6d">N</text>
+        <text x="120" y="208" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="12" fill="#6b7a99">S</text>
+        <text x="208" y="120" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="12" fill="#6b7a99">Ø</text>
+        <text x="32"  y="120" text-anchor="middle" dominant-baseline="middle" font-family="Space Mono" font-size="12" fill="#6b7a99">V</text>
+
+        <!--
+          LAYER 1: Compass dial (rotates with phone)
+          transform-origin="120 120" ensures rotation around compass center.
+          Red tip points UP (toward y=20), which = north when dial is at 0°.
+          We rotate dial by -heading so red tip always points north on screen.
+        -->
+        <g id="compassDial" transform="rotate(0 120 120)">
+          <!-- Red north needle: tip at (120,20), base at (120,120) -->
+          <polygon points="120,20 114,120 126,120" fill="#ff4d6d" opacity="0.9"/>
+          <!-- Gray south needle: tip at (120,220), base at (120,120) -->
+          <polygon points="120,220 114,120 126,120" fill="#6b7a99" opacity="0.6"/>
+        </g>
+
+        <!-- Center cap -->
+        <circle cx="120" cy="120" r="10" fill="#1a2235" stroke="#00e5b4" stroke-width="2"/>
+        <circle cx="120" cy="120" r="4" fill="#00e5b4"/>
+
+        <!--
+          LAYER 2: Target arrow (shown after lock, independent of dial)
+          transform-origin="120 120" — rotates around compass center.
+          Green tip points UP (toward y=30), which = north when at 0°.
+          rotate(correctBearing 120 120) makes tip point to correctBearing degrees from north.
+          This is 100% independent of compassDial rotation.
+        -->
+        <g id="targetArrow" transform="rotate(0 120 120)" display="none" filter="url(#glow)">
+          <!-- Arrow line from center toward tip -->
+          <line x1="120" y1="120" x2="120" y2="32" stroke="#00e5b4" stroke-width="3" stroke-linecap="round"/>
+          <!-- Arrowhead at tip (y=32 = top) -->
+          <polygon points="120,18 112,36 128,36" fill="#00e5b4"/>
+        </g>
+      </svg>
+
+      <!-- Heading readout -->
+      <div class="heading-row">
         <div class="heading-val" id="headingVal">—°</div>
         <div class="heading-dir" id="headingDir">—</div>
       </div>
     </div>
-    <div class="debug-bar" id="debugBar">debug</div>
   </div>
 
   <div id="resultPanel" class="result-panel" style="display:none">
@@ -188,12 +230,11 @@ body{display:flex;flex-direction:column;align-items:center;min-height:100dvh;pad
 // ── State ─────────────────────────────────────────────────
 let phase = 'idle';
 let currentCapital = null;
-let currentHeading = 0;   // 0=Nord, 90=Øst, 180=Sør, 270=Vest
+let currentHeading = 0;
 let compassStarted = false;
 let gotAbsoluteEvent = false;
 let lastIdx = -1;
 let rounds = 0, scores = [];
-let debugOn = false, debugTaps = 0;
 let userLat = null, userLon = null, userPlace = null;
 
 // ── Capitals ───────────────────────────────────────────────
@@ -270,7 +311,8 @@ function startGPS(){
     pos=>{
       userLat=pos.coords.latitude; userLon=pos.coords.longitude;
       document.getElementById('locDot').className='loc-dot ok';
-      document.getElementById('locText').innerHTML=`📍 ${userLat.toFixed(3)}°N, ${userLon.toFixed(3)}°Ø — identifiserer sted…`;
+      document.getElementById('locText').innerHTML=
+        `📍 ${userLat.toFixed(3)}°, ${userLon.toFixed(3)}° — identifiserer sted…`;
       enableBtn();
       fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLon}&format=json&zoom=10`)
         .then(r=>r.json()).then(d=>{
@@ -278,13 +320,9 @@ function startGPS(){
           userPlace=a.city||a.town||a.village||a.county||a.country||null;
           document.getElementById('locText').innerHTML=
             `📍 <strong>${userPlace||'Ukjent sted'}</strong> &nbsp;(${userLat.toFixed(3)}°, ${userLon.toFixed(3)}°)`;
-        }).catch(()=>{
-          userPlace=null;
-          document.getElementById('locText').innerHTML=
-            `📍 <strong>${userLat.toFixed(3)}°N, ${userLon.toFixed(3)}°Ø</strong>`;
-        });
+        }).catch(()=>{userPlace=null});
     },
-    err=>{
+    ()=>{
       userLat=60.39; userLon=5.32; userPlace='Bergen (standard)';
       setLocErr('Kunne ikke hente GPS — bruker Bergen som standard');
       enableBtn();
@@ -292,10 +330,9 @@ function startGPS(){
     {enableHighAccuracy:true,timeout:10000,maximumAge:60000}
   );
 }
-
-function setLocErr(msg){
+function setLocErr(m){
   document.getElementById('locDot').className='loc-dot err';
-  document.getElementById('locText').textContent=msg;
+  document.getElementById('locText').textContent=m;
 }
 function enableBtn(){
   const b=document.getElementById('mainBtn');
@@ -304,51 +341,46 @@ function enableBtn(){
 
 // ── Compass ───────────────────────────────────────────────
 /*
-  HEADING CONVENTION:
-  heading = degrees clockwise from true north that the TOP of the phone faces.
-  So if phone top points East, heading = 90.
+  heading = grader med klokka fra nord som telefonens topp peker.
+  0° = topp peker nord, 90° = topp peker øst, 180° = topp peker sør.
 
   Android deviceorientationabsolute:
-    alpha = degrees the device has rotated CCW around Z (vertical) axis from north.
-    When phone top points north: alpha=0
-    When phone top points east: alpha=270 (rotated 90 CCW from north... wait)
-    Actually: alpha increases CCW when viewed from above.
+    alpha øker mot klokka sett ovenfra.
+    Topp peker nord → alpha=0 → heading=0 ✓
+    Topp peker øst  → alpha=270 → heading=(360-270)=90 ✓
     heading = (360 - alpha) % 360
 
   iOS webkitCompassHeading:
-    Already gives clockwise-from-north heading directly. No conversion needed.
+    Gir allerede heading direkte (0=nord, CW). Ingen konvertering.
 
-  We rotate the compass dial by -heading so the red N needle always
-  points toward true north on screen.
+  compassDial roteres med SVG-attributt: rotate(-heading 120 120)
+  → rød nål peker alltid mot nord på skjermen.
 */
+const dial = document.getElementById('compassDial');
+const targetArrow = document.getElementById('targetArrow');
+
 function setHeading(h){
   currentHeading = (h+360)%360;
+  // Rotate the compass dial so red needle always points north
+  dial.setAttribute('transform', `rotate(${-currentHeading} 120 120)`);
   if(phase==='aiming'){
-    document.getElementById('compassDial').style.transform=`rotate(${-currentHeading}deg)`;
-    document.getElementById('headingVal').textContent=Math.round(currentHeading)+'°';
-    document.getElementById('headingDir').textContent=dirLabel(currentHeading);
-  }
-  if(debugOn){
-    document.getElementById('debugBar').textContent=
-      `hdg:${currentHeading.toFixed(1)}° | pos:${userLat?.toFixed(3)},${userLon?.toFixed(3)}`;
+    document.getElementById('headingVal').textContent = Math.round(currentHeading)+'°';
+    document.getElementById('headingDir').textContent = dirLabel(currentHeading);
   }
 }
 
 function onAbsolute(e){
   if(e.alpha===null) return;
   gotAbsoluteEvent=true;
-  // alpha increases counter-clockwise → convert to clockwise compass heading
   setHeading((360-e.alpha)%360);
 }
 
 function onOrientation(e){
-  if(gotAbsoluteEvent) return; // prefer absolute
+  if(gotAbsoluteEvent) return;
   if(e.alpha===null) return;
-  if(typeof e.webkitCompassHeading==='number' && e.webkitCompassHeading>=0){
-    // iOS: already clockwise from north
+  if(typeof e.webkitCompassHeading==='number'&&e.webkitCompassHeading>=0){
     setHeading(e.webkitCompassHeading);
   } else {
-    // Android fallback (relative, not absolute north)
     setHeading((360-e.alpha)%360);
   }
 }
@@ -356,7 +388,7 @@ function onOrientation(e){
 async function startCompass(){
   if(compassStarted) return;
   compassStarted=true;
-  if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
     try{
       const r=await DeviceOrientationEvent.requestPermission();
       if(r!=='granted'){showNotice('⚠️ Kompasstillatelse avslått.');return}
@@ -365,8 +397,8 @@ async function startCompass(){
   window.addEventListener('deviceorientationabsolute',onAbsolute,true);
   window.addEventListener('deviceorientation',onOrientation,true);
   setTimeout(()=>{
-    if(!gotAbsoluteEvent && currentHeading===0)
-      showNotice('⚠️ Kompasset svarer ikke. Åpne appen i Chrome og gi tilgang til sensorer.');
+    if(!gotAbsoluteEvent&&currentHeading===0)
+      showNotice('⚠️ Kompasset svarer ikke. Åpne i Chrome og gi tilgang til bevegelsessensorer.');
   },2500);
 }
 
@@ -375,8 +407,10 @@ function showNotice(m){const el=document.getElementById('notice');el.textContent
 function hideNotice(){document.getElementById('notice').style.display='none'}
 function updateStats(){
   document.getElementById('statR').textContent=rounds;
-  if(!scores.length){document.getElementById('statA').textContent='—';document.getElementById('statB').textContent='—'}
-  else{
+  if(!scores.length){
+    document.getElementById('statA').textContent='—';
+    document.getElementById('statB').textContent='—';
+  } else {
     document.getElementById('statA').textContent=Math.round(scores.reduce((a,b)=>a+b)/scores.length)+'%';
     document.getElementById('statB').textContent=Math.max(...scores)+'%';
   }
@@ -393,16 +427,13 @@ function nextCity(){
   document.getElementById('idleScreen').style.display='none';
   document.getElementById('aimScreen').style.display='flex';
   document.getElementById('resultPanel').style.display='none';
-  const tw=document.getElementById('targetWrap');
-  tw.classList.remove('visible'); tw.style.transform='';
+
+  // Hide target arrow
+  targetArrow.setAttribute('display','none');
+  // Reset dial to current heading immediately
+  dial.setAttribute('transform',`rotate(${-currentHeading} 120 120)`);
+
   hideNotice();
-
-  // Snap dial without animation
-  const dial=document.getElementById('compassDial');
-  dial.style.transition='none';
-  dial.style.transform=`rotate(${-currentHeading}deg)`;
-  requestAnimationFrame(()=>{dial.style.transition='transform 0.1s ease-out'});
-
   document.getElementById('headingVal').textContent=Math.round(currentHeading)+'°';
   document.getElementById('headingDir').textContent=dirLabel(currentHeading);
   document.getElementById('phasePill').textContent='Sikt inn';
@@ -413,7 +444,6 @@ function nextCity(){
   document.getElementById('capitalDist').textContent=Math.round(dist).toLocaleString('no')+' km unna';
   document.getElementById('mainBtn').textContent='📍 Lås inn retning';
   document.getElementById('mainBtn').disabled=false;
-  if(debugOn) document.getElementById('debugBar').style.display='block';
 }
 
 function lockHeading(){
@@ -422,29 +452,25 @@ function lockHeading(){
 
   const locked = Math.round(currentHeading);
 
-  // Calculate correct bearing from user's actual GPS position
-  const correct = Math.round(bearingBetween(userLat, userLon, currentCapital.lat, currentCapital.lon));
-  const diff = Math.round(angleDiff(locked, correct));
+  // Bearing from user's actual GPS position to capital
+  const correct = Math.round(bearingBetween(userLat,userLon,currentCapital.lat,currentCapital.lon));
+  const diff = Math.round(angleDiff(locked,correct));
   const score = scoreFromDiff(diff);
   rounds++; scores.push(score); updateStats();
 
   // Freeze dial at locked position
-  const dial=document.getElementById('compassDial');
-  dial.style.transition='none';
-  dial.style.transform=`rotate(${-locked}deg)`;
+  dial.setAttribute('transform',`rotate(${-locked} 120 120)`);
+  // Stop compass updates visually (phase is now result)
 
-  // ── TARGET ARROW ──────────────────────────────────────────
-  // target-wrap is a direct child of .compass-ring (same as compass-dial).
-  // It is NOT inside compass-dial, so it is NOT affected by dial's rotation.
-  // rotate(correct) = correct degrees clockwise from 12-o'clock = points to correct bearing.
-  // This is completely independent of where the needle/dial ended up.
-  const tw=document.getElementById('targetWrap');
-  tw.style.transition='none';
-  tw.style.transform=`rotate(${correct}deg)`;
-  requestAnimationFrame(()=>{
-    tw.classList.add('visible');
-    tw.style.transition='transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
-  });
+  // Show target arrow pointing to correct bearing
+  // rotate(correct 120 120): tip starts at top (north=0°), rotates clockwise to correct°
+  // This is in absolute screen space — no relationship to dial rotation whatsoever
+  targetArrow.setAttribute('transform',`rotate(${correct} 120 120)`);
+  targetArrow.setAttribute('display','block');
+
+  // Update heading display to show locked value
+  document.getElementById('headingVal').textContent=locked+'°';
+  document.getElementById('headingDir').textContent=dirLabel(locked);
 
   document.getElementById('phasePill').textContent='Resultat';
   document.getElementById('phasePill').className='phase-pill result';
@@ -465,14 +491,6 @@ function onMainBtn(){
   else if(phase==='aiming') lockHeading();
   else if(phase==='result') nextCity();
 }
-
-// Debug: tap logo 5×
-document.getElementById('logoBtn').addEventListener('click',()=>{
-  if(++debugTaps>=5){
-    debugTaps=0; debugOn=!debugOn;
-    document.getElementById('debugBar').style.display=debugOn&&phase==='aiming'?'block':'none';
-  }
-});
 
 updateStats();
 startGPS();
